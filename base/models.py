@@ -74,11 +74,7 @@ class SupervisorManager(models.Manager):
 class EmployeeManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(Q(type__contains = CustomUser.Types.EMPLOYEE))
-class SupervisorAdditional(models.Model):
-    user = OneToOneField(CustomUser,on_delete=models.CASCADE)
-class EmployeeAdditional(models.Model):
-    user = OneToOneField(CustomUser,on_delete=models.CASCADE)
-    supervisor = ForeignKey(SupervisorAdditional,on_delete=models.CASCADE)
+
 class Employee(CustomUser):
     default_type = CustomUser.Types.EMPLOYEE
     objects = EmployeeManager()
@@ -89,9 +85,7 @@ class Supervisor(CustomUser):
     objects = SupervisorManager()
     class Meta:
         proxy = True
-    @property
-    def showAdditional(self):
-        return self.supervisoradditional
+
 class Employee(CustomUser):
     default_type = CustomUser.Types.EMPLOYEE
     objects = EmployeeManager()
@@ -101,3 +95,6 @@ class Employee(CustomUser):
     def showSupervisor(self):
         return self.employeeadditional
 
+class EmployeeAdditional(models.Model):
+    user = OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="emp")
+    supervisor = ForeignKey(Supervisor,on_delete=models.CASCADE,related_name="empsupervisor")

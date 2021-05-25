@@ -46,6 +46,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     inlines = (
         EmployeeAdditionalInline,
     )
+admin.site.register(Supervisor)
 admin.site.register(Employee, EmployeeAdmin)
 
 #admin.site.unregister(User)
