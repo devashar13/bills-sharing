@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+          
+    <link href=
+'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'
+          rel='stylesheet'>
+      
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" >
+    </script>
+      
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" >
+    </script>
+    <style>
+  input[type=file]::-webkit-file-upload-button {
+  border: 2px solid #6c5ce7;
+  padding: .2em .4em;
+  border-radius: .2em;
+  background-color: #a29bfe;
+  transition: 1s;
+}
+
+input[type=file]::file-selector-button {
+  border: 2px solid #6c5ce7;
+  padding: .2em .4em;
+  border-radius: .2em;
+  background-color: #a29bfe;
+  transition: 1s;
+}
+     </style>
+    <title>Share Bills</title>
+</head>
+<body>
+    <div class="main-container">
+        <div class="form-card" >
+            <h1 class="form-heading">Enter Invoice</h1>
+            <form class="custom-from" action="/saveBill/    " method="POST">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>
+                        <h5 style="color: black;">Vendor Name</h5>
+                        <select name="vendors" id="vendors">
+                            
+                            {% for vendor in vendors %}
+                            <option value="{{vendor.name}}">{{vendor.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="v-inv-no">
+                            <h5>V Inv No</h5>
+                            <input name="v-inv-no" id="v-inv-no" type="text"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="v-inv-no">
+                            <h5>V Inv Dt</h5>
+                            <input name="v-inv-dt"  id="v-inv-dt" type="date"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="v-inv-no">
+                            <h5>Expense Id</h5>
+                            <select name="expid" id="expid">
+
+                                {% for vendor in vendors %}
+                                <option name = {{vendor.expense_ids__eid}} value="{{vendor.expense_ids__eid}}">{{vendor.expense_ids__eid}}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="v-ex-from-date">
+                            <h5>Ex From Date</h5>
+                            <input name="ex-from-date"  id="ex-from-date" type="text"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="ex-to-date">
+                            <h5>Ex To Date</h5>
+                            <input name="ex-to-date" id="ex-to-date" type="text "/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="qty">
+                            <h5>Qty</h5>
+                            <input name="qty" id="qty" type="number"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="rate">
+                            <h5>Rate</h5>
+                            <input step="0.01" name="rate" id="rate" type="number"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="amount">
+                            <h5>Amount</h5>
+                            <input step="0.01" name="amount" id="amount" type="number"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="gst">
+                            <h5>GST</h5>
+                            <input step="0.01" name="gst" value="0.00" id="gst" type="number"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="total">
+                            <h5>Total Amount</h5>
+                            <input  step="0.01" name="total" id="total" type="number"/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <label for="due">
+                            <h5>Due Date</h5>
+                            <input name="due" id="due" type="text "/>
+                        </label>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="myFileInput"></label>
+                            <input name="myFileInput" id="myFileInput" type="file" accept="image/*;capture=camera" multiple>
+                        </td>
+                    </tr>
+
+                 
+                </table>
+                <button>Submit</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    
+    // $(document).ready(function() {
+          
+    //       $(function() {
+    //           $( "#ex-from-date" ).datepicker();
+    //       });
+    //   })
+    //   $(document).ready(function() {
+          
+        
+    //   })
+    //   function changeDate(){
+    //     var date = new Date($("#ex-from-date").val());
+    //     var day = date.getDate();
+    //     console.log(day)
+    //     var month = date.getMonth()
+    //     var year = date.getFullYear();  
+    //     var today = year+'-'+month+'-'+day;
+    //     console.log(today)
+    //     $( "#ex-to-date" ).datepicker({
+    //     dateFormat: 'yy-mm-dd',
+    //     minDate : today,
+    //     });
+    //   }
+        
+    $(function () {
+    $("#ex-from-date").datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        numberOfMonths: 1,
+        onClose: function (selectedDate) {
+            $("#ex-to-date").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#ex-to-date").datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        numberOfMonths: 1,
+        onClose: function (selectedDate) {
+            $("#ex-from-date").datepicker("option", "maxDate", selectedDate);
+        }
+    });
+    $("#due").datepicker({
+        dateFormat: 'yy-mm-dd',
+        
+        changeMonth: true,
+        numberOfMonths: 1,
+        minDate: '0'
+    });
+});
+$("#rate").keyup(function(){
+    console.log($("#qty").val())
+   total = $("#qty").val()* $("#rate").val();
+   $("#amount").val(total);
+});
+$("#qty").keyup(function(){
+    console.log($("#qty").val())
+   total = $("#qty").val()* $("#rate").val();
+   $("#amount").val(total);
+});
+$("#qty").keyup(function(){
+    console.log($("#qty").val())
+   total = $("#qty").val()* $("#rate").val();
+   $("#amount").val(total);
+});
+$("#total").focus(function(){
+   total = Number($("#amount").val()) + Number($("#gst").val());
+   $("#total").val(total);
+
+})
+
+</script>
+</html>
