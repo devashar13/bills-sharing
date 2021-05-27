@@ -128,12 +128,13 @@ class Bill(models.Model):
     exp_from_date = models.DateField()
     exp_to_date = models.DateField()
     quantity = models.IntegerField()
-    rate = models.DecimalField(max_digits=7,decimal_places=2)
+    rate = models.DecimalField(max_digits=10,decimal_places=3)
 
-    amount = models.DecimalField(max_digits=7,decimal_places=2)
-    gst = models.DecimalField(max_digits=7,decimal_places=2)
+    amount = models.DecimalField(max_digits=10,decimal_places=3)
+    gst = models.DecimalField(max_digits=10,decimal_places=3)
     other=models.ForeignKey(BillOther, on_delete=models.CASCADE,null=True,blank=True)
-    total_amount = models.DecimalField(decimal_places=10,max_digits=10)
+    total_amount = models.DecimalField(max_digits=10,decimal_places=3)
+
     due_payment = models.DateField()
 
     def __str__(self):

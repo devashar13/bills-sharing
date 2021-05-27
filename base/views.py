@@ -31,7 +31,7 @@ def saveBill(request):
         invoice_date = data.get("v-inv-dt")
         expense_id = data.get("expid")
         print(expense_id)
-        exp_from_date = data.get("v-ex-from-date")
+        exp_from_date = data.get("ex-from-date")
         exp_to_date = data.get("ex-to-date")
         quantity = data.get("qty")
         rate = Decimal(data.get("rate"))
@@ -39,8 +39,9 @@ def saveBill(request):
         gst = Decimal(data.get("gst"))
         total_amount = Decimal(data.get("total"))
         due_payment = data.get("due")
-        print(amount,type(amount))
-        print(gst,type(gst))
+        print(exp_from_date)
+
+        
         bill = Bill(
             vendor = vendor,
             invoice_num = invoice_num,
