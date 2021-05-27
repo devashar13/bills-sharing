@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Vendor, ExpenseID, Bill
+from .models import Vendor, ExpenseID, Bill, BillImage
 from decimal import Decimal
 from django.http import JsonResponse
 import json
@@ -91,12 +91,12 @@ def addBillVendor(request,vendorid):
 def saveBill(request):
     try:
         data = request.POST 
-        vendors = data.get("vendors")
-        vendor = Vendor.objects.filter(name = vendors).first()
+        vendors_name = data.get("vendors-name")
+        print(vendors_name)
+        vendor = Vendor.objects.filter(name = vendors_name).first()
         invoice_num = data.get("v-inv-no")
         invoice_date = data.get("v-inv-dt")
-        expense_id = data.get("expid")
-        print(expense_id)
+        expense_id = data.get("vendors-expense")
         exp_from_date = data.get("ex-from-date")
         exp_to_date = data.get("ex-to-date")
         quantity = data.get("qty")
@@ -105,9 +105,8 @@ def saveBill(request):
         gst = Decimal(data.get("gst"))
         total_amount = Decimal(data.get("total"))
         due_payment = data.get("due")
-        print(exp_from_date)
+        files = data.get("myFileInput")
 
-        
         bill = Bill(
             vendor = vendor,
             invoice_num = invoice_num,
@@ -121,11 +120,19 @@ def saveBill(request):
             gst = (gst),
             total_amount = (total_amount),
             due_payment = due_payment
-            
         )
         bill.save()
+        for f in request.FILES.getlist('myFileInput'):
+            bi = BillImage(
+                image = f,
+                bill = bill
+            )
+            bi.save()
         return redirect("addBill")
         
     except Exception as e:
+        print("HELLO")
         print(e)
+        return redirect("addBill")
+
     

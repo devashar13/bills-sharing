@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %} {% block 'card-content' %}
 <div class="custom-card login-form-card" >
     <h1 class="form-heading">Enter Invoice</h1>
-    <form class="custom-from" action="/savebill/" method="POST">
+    <form class="custom-from" action="/savebill/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="custom-form-group">
             <p class="b-span">Vendor Name</p>
@@ -78,7 +78,6 @@
         <div class="custom-form-group">
 			<input type="submit" value="SUBMIT" />
 		</div>
-
         </div>
     </form>
 </div>
