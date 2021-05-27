@@ -129,13 +129,12 @@ class Bill(models.Model):
     exp_to_date = models.DateField()
     quantity = models.IntegerField()
     rate = models.DecimalField(max_digits=10,decimal_places=3)
-
     amount = models.DecimalField(max_digits=10,decimal_places=3)
     gst = models.DecimalField(max_digits=10,decimal_places=3)
     other=models.ForeignKey(BillOther, on_delete=models.CASCADE,null=True,blank=True)
     total_amount = models.DecimalField(max_digits=10,decimal_places=3)
-
     due_payment = models.DateField()
+    paid = models.BooleanField(default=False)
 
     def __str__(self):
         return self.invoice_num
