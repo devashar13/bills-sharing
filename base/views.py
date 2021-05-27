@@ -1,7 +1,9 @@
-from base.models import Bill, Vendor
+from base.models import Bill, BillImage, Vendor
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate,login,logout
 from decimal import Decimal
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
 def loginView(request):
     if request.method == "POST":
@@ -30,7 +32,6 @@ def saveBill(request):
         invoice_num = data.get("v-inv-no")
         invoice_date = data.get("v-inv-dt")
         expense_id = data.get("expid")
-        print(expense_id)
         exp_from_date = data.get("ex-from-date")
         exp_to_date = data.get("ex-to-date")
         quantity = data.get("qty")
@@ -39,7 +40,8 @@ def saveBill(request):
         gst = Decimal(data.get("gst"))
         total_amount = Decimal(data.get("total"))
         due_payment = data.get("due")
-        print(exp_from_date)
+        # image = request.FILES   
+        # print("image",image)        
 
         
         bill = Bill(
@@ -57,11 +59,30 @@ def saveBill(request):
             due_payment = due_payment
             
         )
+        
         bill.save()
+        # print(image)
+        print(bill)
+        # billImage = BillImage(
+        #     bill = bill,
+        #     image = image
+        # )
+        # billImage.save()
         return redirect("addBill")
         
     except Exception as e:
         print(e)
+
+def viewBills(request):
+    bills = Bill.objects.values(
+        "vendor__name",'invoice_num','invoice_date',
+        'expense_id','exp_from_date','exp_to_date',
+        'quantity','rate','amount','gst','other',
+        'total_amount','due_payment','paid'
+        )
+    print(bills)
+    return render(request,'base/viewbills.html',{"bills":bills})
+    
     
     
     

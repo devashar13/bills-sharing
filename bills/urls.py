@@ -22,7 +22,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("login/",loginView,name = "login"),
     path("addBill/",addBill,name = "addBill"),
-    path("saveBill/",saveBill,name = "saveBilla"),
+    path("saveBill/",saveBill,name = "saveBills"),
+    path("viewBills/",viewBills,name = "viewBills"),
+    
     
     
 ]
