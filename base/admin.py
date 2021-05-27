@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 # Register your models here.
 
-from .models import CustomUser,Employee, EmployeeAdditional, Supervisor
+from .models import CustomUser,Employee, EmployeeAdditional, Supervisor,ExpenseID,Vendor,Bill,BillImage,BillOther
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -47,6 +47,13 @@ class EmployeeAdmin(admin.ModelAdmin):
         EmployeeAdditionalInline,
     )
 admin.site.register(Supervisor)
+admin.site.register(ExpenseID)
+admin.site.register(Vendor)
+admin.site.register(BillOther)
+admin.site.register(Bill)
+admin.site.register(BillImage)
+
+
 admin.site.register(Employee, EmployeeAdmin)
 
 #admin.site.unregister(User)

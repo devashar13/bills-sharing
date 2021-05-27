@@ -16,11 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from base.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("login/",loginView,name = "login"),
     path("vendors/",getVendors,name = "getVendors"),
     path("addvendor/",addVendor,name = "addVendor"),
     path("vendordetail/<int:vendorid>/",vendorDetails,name="vendorDetails"),
-    path("createexpenseid",createExpenseID,name="createExpenseID")
+    path("createexpenseid",createExpenseID,name="createExpenseID"),
+    path("addBill/",addBill,name = "addBill"),
+    path("saveBill/",saveBill,name = "saveBilla"),
 ]
+urlpatterns+=static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

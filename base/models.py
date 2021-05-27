@@ -109,9 +109,8 @@ class ExpenseID(models.Model):
 
 class Vendor(models.Model):
     name = models.CharField(max_length=225)
-    email = models.EmailField(unique=True)
-    expense_ids = models.ManyToManyField(ExpenseID)
-    phone = models.IntegerField(null=True, blank=True)
+    email = models.EmailField(unique=True,null=True,blank=True)
+    expense_ids = models.ManyToManyField(ExpenseID,null=True,blank=True)
 
     def __str__(self):
         return self.name
@@ -129,12 +128,13 @@ class Bill(models.Model):
     exp_from_date = models.DateField()
     exp_to_date = models.DateField()
     quantity = models.IntegerField()
-    rate=models.DecimalField(decimal_places=10,max_digits=10)
-    amount = models.DecimalField(decimal_places=10,max_digits=10)
-    gst = models.DecimalField(decimal_places=10,max_digits=10)
-    other=models.ForeignKey(BillOther, on_delete=models.CASCADE)
-    total_amount = models.DecimalField(decimal_places=10,max_digits=10)
+    rate = models.DecimalField(max_digits=10,decimal_places=3)
+    amount = models.DecimalField(max_digits=10,decimal_places=3)
+    gst = models.DecimalField(max_digits=10,decimal_places=3)
+    other=models.ForeignKey(BillOther, on_delete=models.CASCADE,null=True,blank=True)
+    total_amount = models.DecimalField(max_digits=10,decimal_places=3)
     due_payment = models.DateField()
+    paid = models.BooleanField(default=False)
 
     def __str__(self):
         return self.invoice_num

@@ -119,7 +119,12 @@ AUTH_USER_MODEL = "base.CustomUser"
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+MEDIA_ROOT = 'static/files'
+MEDIA_URL = '/files/'
+STATIC_FILES = '/static/'
+STATIC_DIRS = [
+    BASE_DIR / 'static'
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
