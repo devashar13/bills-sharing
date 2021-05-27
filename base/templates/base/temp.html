@@ -1,0 +1,43 @@
+{% if vendors %}
+        <div>
+            <div class="custom-form-group">
+                <input
+                    type="text"
+                    id="filterByName"
+                    onkeyup="filterFunction()"
+                    required
+                />
+                <span>Filter by Name</span>
+            </div>
+        </div>
+        <table class="table table-striped table-responsive" id="tbl">
+            <thead>
+                <tr>
+                    <th class="text-center">Vendors List</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                {% for vendor in vendors %}
+                <tr>
+                    <td class="vendor-name text-center">{{vendor.name}}</td>
+                    <td>
+                        <button class="btn btn-primary">VIEW DETAILS</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">VIEW BILLS</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">ADD BILL</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="d-flex justify-content-center align-items-center">
+            <h1>NO VENDORS AVAILABLE</h1>
+        </div>
+        {% endif %}

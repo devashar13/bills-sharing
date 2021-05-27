@@ -1,10 +1,12 @@
-from base.models import Bill, BillImage, Vendor
 from django.shortcuts import redirect, render
+from django.http import HttpResponse
 from django.contrib.auth import authenticate,login,logout
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Vendor, ExpenseID, Bill, BillImage
 from decimal import Decimal
+from django.http import JsonResponse
 import json
-from django.core.serializers.json import DjangoJSONEncoder
-# Create your views here.
+
 def loginView(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -18,20 +20,83 @@ def loginView(request):
             print('nope')
     else:
         return render(request,'base/login.html',{})
+
+def getVendors(request):
+    vendors = Vendor.objects.all()
+    return render(request, 'base/vendorsList.html', {'vendors': vendors})
+
+def addVendor(request):
+    if request.method=="POST":
+        data=request.POST
+        vname=data.get("vname")
+        vemail = data.get("vmail")
+        v = Vendor(name=vname,email=vemail)
+        v.save()
+    
+    return render(request,'base/vendorsList.html')
+
+def vendorDetails(request,vendorid):
+    vendor = Vendor.objects.get(pk=vendorid)
+    expenseIds = vendor.expense_ids.all()
+    allExpenseIds = ExpenseID.objects.all()
+    return render(request,'base/vendorDetails.html',{'vendor':vendor,'expenseIds':expenseIds,'allExpenseIds':allExpenseIds})
+
+def getExpenseIdsForVendor(request):
+    if request.method=='POST':
+        data = request.POST
+        vname = data.get("vendor")
+        v = Vendor.objects.get(name=vname)
+        eids = v.expense_ids.all()
+        data = {}
+        for e in eids:
+            data[e.epattern] = e.eid
+        return JsonResponse(data)
+
+def createExpenseID(request):
+    if request.method == "POST":
+        data = request.POST
+        eid = data.get("eid")
+        epattern = data.get("epattern")
+        expense = ExpenseID(
+            eid=eid,
+            epattern=epattern
+        )
+        expense.save()
+        return render(request,'base/ExpenseIdAdded.html')
+    return render(request,'base/createExpenseId.html')
+    
+def addExpenseID(request):
+    if request.method=="POST":
+        data=request.POST
+        selectedeid=data.get("selectedeid")
+        vendorid = data.get("vendorid")
+        vendor = Vendor.objects.get(pk=vendorid)
+        vendor.expense_ids.add(ExpenseID.objects.get(epattern=selectedeid))
+    
+    return render(request,'base/vendorDetails.html')
+
+
 def addBill(request):
     vendors = Vendor.objects.all().values('name','expense_ids__eid')
-    ctx = {
-        'vendors':vendors
-    }
-    return render(request,'base/addbill.html',ctx)
+    vendorNames = Vendor.objects.all().values('name').distinct()
+    return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames})
+
+def addBillVendor(request,vendorid):
+    vendor = Vendor.objects.get(pk=vendorid)
+    vendors = Vendor.objects.all().values('name','expense_ids__eid')
+    vendorNames = Vendor.objects.all().values('name').distinct()
+    return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames})
+
+
 def saveBill(request):
     try:
         data = request.POST 
-        vendors = data.get("vendors")
-        vendor = Vendor.objects.filter(name = vendors).first()
+        vendors_name = data.get("vendors-name")
+        print(vendors_name)
+        vendor = Vendor.objects.filter(name = vendors_name).first()
         invoice_num = data.get("v-inv-no")
         invoice_date = data.get("v-inv-dt")
-        expense_id = data.get("expid")
+        expense_id = data.get("vendors-expense")
         exp_from_date = data.get("ex-from-date")
         exp_to_date = data.get("ex-to-date")
         quantity = data.get("qty")
@@ -40,10 +105,8 @@ def saveBill(request):
         gst = Decimal(data.get("gst"))
         total_amount = Decimal(data.get("total"))
         due_payment = data.get("due")
-        # image = request.FILES   
-        # print("image",image)        
+        files = data.get("myFileInput")
 
-        
         bill = Bill(
             vendor = vendor,
             invoice_num = invoice_num,
@@ -57,20 +120,19 @@ def saveBill(request):
             gst = (gst),
             total_amount = (total_amount),
             due_payment = due_payment
-            
         )
         
         bill.save()
-        # print(image)
-        print(bill)
-        # billImage = BillImage(
-        #     bill = bill,
-        #     image = image
-        # )
-        # billImage.save()
+        for f in request.FILES.getlist('myFileInput'):
+            bi = BillImage(
+                image = f,
+                bill = bill
+            )
+            bi.save()
         return redirect("addBill")
         
     except Exception as e:
+        print("HELLO")
         print(e)
 
 def viewBills(request):
@@ -82,10 +144,5 @@ def viewBills(request):
         )
     print(bills)
     return render(request,'base/viewbills.html',{"bills":bills})
+
     
-    
-    
-    
-    
-    
-  
