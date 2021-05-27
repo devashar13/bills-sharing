@@ -24,8 +24,11 @@ urlpatterns = [
     path("vendors/",getVendors,name = "getVendors"),
     path("addvendor/",addVendor,name = "addVendor"),
     path("vendordetail/<int:vendorid>/",vendorDetails,name="vendorDetails"),
-    path("createexpenseid",createExpenseID,name="createExpenseID"),
-    path("addBill/",addBill,name = "addBill"),
-    path("saveBill/",saveBill,name = "saveBilla"),
+    path("getexpenseidsforvendor/",getExpenseIdsForVendor,name="getExpenseIdsForVendor"),
+    path("addexpenseidtovendor/",addExpenseID,name="addExpenseID"),
+    path("createexpenseid/",createExpenseID,name="createExpenseID"),
+    path("addbill/",addBill,name = "addBill"),
+    path("addbill/<int:vendorid>",addBillVendor,name = "addBillVendor"),
+    path("savebill/",saveBill,name = "saveBill"),
 ]
 urlpatterns+=static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

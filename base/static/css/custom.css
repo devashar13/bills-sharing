@@ -1,50 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
-*{
+* {
     padding: 0;
-    margin: 0; 
+    margin: 0;
     font-family: 'Quicksand', sans-serif;
-   }
-body{
+}
+body {
     background: #fff;
-	overflow: hidden;
+    overflow: hidden;
 }
-.main-container{
+.main-container {
     position: relative;
-    width: 100%;  height: 100vh;
-    background: linear-gradient(180deg , #fff 0% 50%, #4bace4 50% 100%);
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #fff 0% 50%, #4bace4 50% 100%);
 }
-.custom-card{
+.custom-card {
     position: absolute;
     max-height: 90vh;
     overflow-x: scroll;
-    top: 50%;   left: 50%;
-    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 40px 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
     background: #fff;
-	max-height: 95vh;
-	overflow-y: scroll;
-	overflow-x: hidden;
+    max-height: 95vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
-.form-heading{
+.form-heading {
     font-size: 30px;
     text-align: center;
     margin-bottom: 30px;
     text-transform: uppercase;
     color: #726b6b;
 }
-.custom-form{
+.custom-form {
     position: relative;
 }
-.custom-form-group{
+.custom-form-group {
     position: relative;
     margin: 40px 0;
     width: 100%;
 }
-.custom-form-group input, .custom-form-group textarea{
+.custom-form-group input,
+.custom-form-group textarea {
     position: relative;
-    border: none;   outline: none;
+    border: none;
+    outline: none;
     width: 100%;
     padding: 6px 0;
     border-bottom: 1px solid #726b6b;
@@ -52,54 +56,106 @@ body{
     color: #726b6b;
     background: transparent;
 }
-.custom-form-group span{
-    color: #726b6b;  background: transparent;
+.custom-form-group span {
+    color: #726b6b;
+    background: transparent;
     display: inline-block;
     padding: 3px 10px;
     position: absolute;
-    top: 8px;  left: 0;
+    top: 8px;
+    left: 0;
     font-size: 15px;
     text-transform: uppercase;
-    transition: .5s;
+    transition: 0.5s;
     z-index: -1;
 }
-.custom-form-group input:focus + span ,
+.custom-form-group input:focus + span,
 .custom-form-group textarea:focus + span,
-.custom-form-group input:valid + span ,
-.custom-form-group textarea:valid + span{
-    color: #fff;  background: #025175;
+.custom-form-group input:valid + span,
+.custom-form-group textarea:valid + span {
+    color: #fff;
+    background: #025175;
     top: -20px;
 }
-.custom-form-group:last-child{
+
+.b-span {
+    padding: 3px 10px;
+    font-size: 15px;
+    text-transform: uppercase;
+    color: #fff;
+    background: #025175;
+    width: fit-content;
+}
+
+.custom-form-group input:focus + .b-span,
+.custom-form-group textarea:focus + .b-span,
+.custom-form-group input:valid + .b-span,
+.custom-form-group textarea:valid + .b-span {
+    color: #fff;
+    background: #025175;
+}
+
+.custom-form-group:last-child {
     text-align: right;
     margin: 20px 0;
 }
-.custom-form-group input[type = 'submit']{
+.custom-form-group input[type='submit'] {
     width: auto;
     border: none;
-    color: #fff;  background: #025175;
+    color: #fff;
+    background: #025175;
     padding: 10px 20px;
     border-radius: 50px;
     cursor: pointer;
 }
 
-#tbl {
-	overflow-x: auto;
-	width: 100%;
+input[type='file']::-webkit-file-upload-button {
+    border: 2px solid #6c5ce7;
+    padding: 0.2em 0.4em;
+    border-radius: 0.2em;
+    background-color: #a29bfe;
+    transition: 1s;
 }
 
-.login-form-card {
-	width: 100%;
+input[type='file']::file-selector-button {
+    border: 2px solid #6c5ce7;
+    padding: 0.2em 0.4em;
+    border-radius: 0.2em;
+    background-color: #a29bfe;
+    transition: 1s;
+}
+
+#tbl {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.login-form-card, 
+.bill-form-card{
+    width: 100%;
     max-width: 500px;
 }
 
-
-.vendors-list-card, .vendor-details-card {
-	width: 100%;
+.vendors-list-card,
+.vendor-details-card {
+    width: 100%;
     max-width: 900px;
 }
 
 .vendor-name {
-	min-width: 200px;
+    min-width: 200px;
 }
 
+#id-added {
+    background-color: lightgreen;
+    font-weight: bold;
+    padding: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: max-content;
+    border: 2px solid green;
+    border-radius: 5px;
+}

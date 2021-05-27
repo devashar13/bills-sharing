@@ -1,0 +1,10 @@
+{% extends 'base/createExpenseId.html' %} {% block 'successAddition' %}
+<div id="id-added">
+	<h3>Expense ID added Successfully</h3>
+</div>
+<script>
+	setTimeout(() => {
+		document.getElementById("id-added").style.display="none"
+	},5000)
+</script>
+{% endblock %}

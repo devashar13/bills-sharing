@@ -1,14 +1,14 @@
 {% extends 'base/base.html' %} {% block 'card-content' %}
 <div class="custom-card vendor-details-card">
 	<h1 class="form-heading">Create EXPENSE ID</h1>
-	<form class="custom-form" action="" method="POST">
+	<form class="custom-form" action="/createexpenseid/" method="POST">
 		{% csrf_token %}
 		<div class="custom-form-group">
-			<input type="text" required />
+			<input name="eid" type="text" required />
 			<span>Expense ID</span>
 		</div>
 		<div class="custom-form-group">
-			<input type="text" required />
+			<input name="epattern" type="text" required />
 			<span>Pattern</span>
 		</div>
 		<div class="custom-form-group">
@@ -16,4 +16,6 @@
 		</div>
 	</form>
 </div>
+{% block 'successAddition' %}
+{% endblock %}
 {% endblock %}

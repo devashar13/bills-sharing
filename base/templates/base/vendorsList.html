@@ -1,9 +1,16 @@
 {% extends 'base/base.html' %} {% block 'card-content' %}
 <div class="custom-card vendors-list-card">
-    <div style="overflow-y: scroll; overflow-x: none;">
-		<div class="add-vendor d-flex justify-content-end">
-			<button class="btn btn-success mb-3">ADD VENDOR</button>
-		</div>
+    <h1 class="form-heading">Vendors List</h1>
+    <div style="overflow-y: scroll; overflow-x: none">
+        <div class="add-vendor d-flex justify-content-end">
+            <button
+                class="btn btn-success mb-3"
+                data-toggle="modal"
+                data-target="#addVendorModal"
+            >
+                ADD VENDOR
+            </button>
+        </div>
         {% if vendors %}
         <div>
             <div class="custom-form-group">
@@ -27,16 +34,22 @@
             </thead>
             <tbody id="tblbody">
                 {% for vendor in vendors %}
-                <tr>
+                <tr id="{{vendor.id}}">
                     <td class="vendor-name text-center">{{vendor.name}}</td>
                     <td>
-						<a href="{% url 'vendorDetails' vendorid=vendor.id %}"><button class="btn btn-primary">VIEW DETAILS</button></a>
+                        <a href="{% url 'vendorDetails' vendorid=vendor.id %}"
+                            ><button class="btn btn-primary">
+                                VIEW DETAILS
+                            </button></a
+                        >
                     </td>
                     <td>
-						<button class="btn btn-primary">VIEW BILLS</button>
+                        <button class="btn btn-primary">VIEW BILLS</button>
                     </td>
                     <td>
-                        <button class="btn btn-success">ADD BILL</button>
+                        <button class="add-bill btn btn-success">
+                            ADD BILL
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -49,8 +62,63 @@
         {% endif %}
     </div>
 </div>
+<div
+    class="modal fade"
+    id="addVendorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="addVendorModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="custom-card login-form-card">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Add VENDOR
+                    </h5>
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <form class="custom-form" action="" method="POST">
+                        {% csrf_token %}
+                        <div class="custom-form-group">
+                            <input type="text" id="vname" required />
+                            <span>Vendor Name</span>
+                        </div>
+                        <div class="custom-form-group">
+                            <input type="email" id="vmail" required />
+                            <span>Email</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                    >
+                        Close
+                    </button>
+                    <a href=""
+                        ><button class="btn btn-success" id="addVendorButton">
+                            &plus; ADD VENDOR
+                        </button></a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    let num = table.getElementsByTagName('tr').length;
     function filterFunction() {
         var input, filter, ul, li, a, i, txtValue;
         input = document.getElementById('filterByName');
@@ -63,17 +131,50 @@
             txtValue = a.textContent || a.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
                 li[i].style.display = '';
-                num++;
             } else {
                 li[i].style.display = 'none';
-                num--;
             }
         }
-        if (num == 1) {
-            document.getElementById('nva').style.display = 'none';
-        } else {
-            document.getElementById('nva').style.display = '';
-        }
     }
+
+    document.querySelectorAll('.add-bill').forEach((element) => {
+        element.addEventListener('click', (event) => {
+            vendorid = event.target.parentNode.parentNode.id;
+            location.assign(`/addbill/${vendorid}`);
+        });
+    });
+
+    function validateEmail(email) {
+        const re =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    $('#addVendorButton').click(function () {
+        var vname = $('#vname').val();
+        var vmail = $('#vmail').val();
+        if (vname === '' || vmail === '') {
+            alert('Vendor Name and Vendor Email is Compulsory');
+        } else if(validateEmail(vmail) === false) {
+            alert('Email is invalid');
+        } else {
+            $.ajax({
+                headers: { 'X-CSRFToken': '{{csrf_token}}' },
+                type: 'POST',
+                url: '/addvendor/',
+                dataType: 'json',
+                data: {
+                    vname: vname,
+                    vmail: vmail,
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+            });
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
 </script>
 {% endblock %}

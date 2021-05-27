@@ -1,171 +1,87 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-          
-    <link href=
-'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'
-          rel='stylesheet'>
-      
-    <script src=
-"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" >
-    </script>
-      
-    <script src=
-"https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" >
-    </script>
-    <style>
-  input[type=file]::-webkit-file-upload-button {
-  border: 2px solid #6c5ce7;
-  padding: .2em .4em;
-  border-radius: .2em;
-  background-color: #a29bfe;
-  transition: 1s;
-}
-
-input[type=file]::file-selector-button {
-  border: 2px solid #6c5ce7;
-  padding: .2em .4em;
-  border-radius: .2em;
-  background-color: #a29bfe;
-  transition: 1s;
-}
-     </style>
-    <title>Share Bills</title>
-</head>
-<body>
-    <div class="main-container">
-        <div class="form-card" >
-            <h1 class="form-heading">Enter Invoice</h1>
-            <form class="custom-from" action="/saveBill/    " method="POST">
-                {% csrf_token %}
-                <table>
-                    <tr>
-                        <td>
-                        <h5 style="color: black;">Vendor Name</h5>
-                        <select name="vendors" id="vendors">
-                            
-                            {% for vendor in vendors %}
+{% extends 'base/base.html' %} {% block 'card-content' %}
+<div class="custom-card login-form-card" >
+    <h1 class="form-heading">Enter Invoice</h1>
+    <form class="custom-from" action="/savebill/" method="POST">
+        {% csrf_token %}
+        <div class="custom-form-group">
+            <p class="b-span">Vendor Name</p>
+			<select name="vendors-name" id="vendors-names">
+                {% if selectedvendor %}
+                    {% for vendor in vendorNames %}
+                        {% if vendor.name == selectedvendor.name %}
+                            <option value="{{vendor.name}}" selected>{{vendor.name}}</option>
+                        {% else %}
                             <option value="{{vendor.name}}">{{vendor.name}}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="v-inv-no">
-                            <h5>V Inv No</h5>
-                            <input name="v-inv-no" id="v-inv-no" type="text"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="v-inv-no">
-                            <h5>V Inv Dt</h5>
-                            <input name="v-inv-dt"  id="v-inv-dt" type="date"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="v-inv-no">
-                            <h5>Expense Id</h5>
-                            <select name="expid" id="expid">
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <option selected>Select Vendor Name</option>
+                    {% for vendor in vendorNames %}
+                        <option value="{{vendor.name}}">{{vendor.name}}</option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+		</div>
+        <div class="custom-form-group">
+			<input name="v-inv-no" id="v-inv-no" type="text" required/>
+			<span>V Inv No</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="v-inv-dt"  id="v-inv-dt" type="text" onfocus="(this.type='date')" onfocusout="(this.type='text')" required/>
+			<span>V Inv Date</span>
+		</div>
+        <div class="custom-form-group">
+            <p class="b-span">Expense ID</p>
+			<select name="vendors-expense" id="vendors-expenses">
+                <option selected>Select Expense ID</option>
+                {% for vendor in vendors %}
+                <option name = {{vendor.expense_ids__eid}} value="{{vendor.expense_ids__eid}}">{{vendor.expense_ids__eid}}</option>
+                {% endfor %}
+            </select>
+		</div>
+        <div class="custom-form-group">
+            <input name="ex-from-date"  id="ex-from-date" type="text" required/>
+			<span>Ex From Date</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="ex-to-date" id="ex-to-date" type="text" required/>
+			<span>Ex To Date</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="qty" id="qty" type="number" required/>
+			<span>Quantity</span>
+		</div>
+        <div class="custom-form-group">
+            <input step="0.01" name="rate" id="rate" type="number" required/>
+			<span>Rate</span>
+		</div>
+        <div class="custom-form-group">
+            <input step="0.01" name="amount" id="amount" type="number" required/>
+			<span>Amount</span>
+		</div>
+        <div class="custom-form-group">
+            <input step="0.01" name="gst" id="gst" type="number" required/>
+			<span>GST</span>
+		</div>
+        <div class="custom-form-group">
+            <input  step="0.01" name="total" id="total" type="number" required/>
+			<span>Total Amount</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="due" id="due" type="text" required/>
+			<span>Due Date</span>
+		</div>
+        <div class="custom-form-group">
+            <label for="myFileInput"></label>
+            <input name="myFileInput" id="myFileInput" type="file" accept="image/*;capture=camera" multiple  style="border-bottom: 0;">
+		</div>
+        <div class="custom-form-group">
+			<input type="submit" value="SUBMIT" />
+		</div>
 
-                                {% for vendor in vendors %}
-                                <option name = {{vendor.expense_ids__eid}} value="{{vendor.expense_ids__eid}}">{{vendor.expense_ids__eid}}</option>
-                                {% endfor %}
-                            </select>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="v-ex-from-date">
-                            <h5>Ex From Date</h5>
-                            <input name="ex-from-date"  id="ex-from-date" type="text"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="ex-to-date">
-                            <h5>Ex To Date</h5>
-                            <input name="ex-to-date" id="ex-to-date" type="text "/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="qty">
-                            <h5>Qty</h5>
-                            <input name="qty" id="qty" type="number"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="rate">
-                            <h5>Rate</h5>
-                            <input step="0.01" name="rate" id="rate" type="number"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="amount">
-                            <h5>Amount</h5>
-                            <input step="0.01" name="amount" id="amount" type="number"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="gst">
-                            <h5>GST</h5>
-                            <input step="0.01" name="gst" value="0.00" id="gst" type="number"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="total">
-                            <h5>Total Amount</h5>
-                            <input  step="0.01" name="total" id="total" type="number"/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <label for="due">
-                            <h5>Due Date</h5>
-                            <input name="due" id="due" type="text "/>
-                        </label>
-                    </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for="myFileInput"></label>
-                            <input name="myFileInput" id="myFileInput" type="file" accept="image/*;capture=camera" multiple>
-                        </td>
-                    </tr>
-
-                 
-                </table>
-                <button>Submit</button>
-
-                </div>
-            </form>
         </div>
-    </div>
-</body>
-
+    </form>
+</div>
 <script>
     
     // $(document).ready(function() {
@@ -235,8 +151,46 @@ $("#qty").keyup(function(){
 $("#total").focus(function(){
    total = Number($("#amount").val()) + Number($("#gst").val());
    $("#total").val(total);
-
-})
+});
+$("#total").focusout(function(){
+    if($("#total").val() === '0') {
+        $("#total").val('')
+    }
+});
 
 </script>
-</html>
+<script>
+    $(document).ready(() => {
+        $("#vendors-names").change(function() {
+            var selectedvendor = $("#vendors-names").children("option:selected").val();
+            if(selectedvendor === 'Select Vendor Name') {
+                alert("Select a Vendor Name")
+                document.getElementById("vendors-expenses").innerHTML='<option selected>Select Expense ID</option>'
+            } else {
+                $.ajax({
+                    'headers': { "X-CSRFToken": '{{csrf_token}}' },
+                    'type': 'POST',
+                    'url': '/getexpenseidsforvendor/',
+                    'data': {
+                        'vendor':selectedvendor
+                    },
+                    success: function(response, textStatus, jqXHR) {
+                        html='<option selected>Select Expense ID</option>'
+                        Object.keys(response).forEach((data) => {
+                            d = `<option name="${response[data]}" value="${response[data]}">${response[data]}</option>`
+                            html+=d
+                        })
+                        document.getElementById("vendors-expenses").innerHTML=html
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                }   
+                )
+            }
+        })
+    })
+</script>
+{% endblock %}
