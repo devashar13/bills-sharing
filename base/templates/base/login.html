@@ -4,11 +4,11 @@
 	<form class="custom-form" action="" method="POST">
 		{% csrf_token %}
 		<div class="custom-form-group">
-			<input type="text" required />
+			<input type="text" name = "email" required />
 			<span>Email</span>
 		</div>
 		<div class="custom-form-group">
-			<input type="password" required />
+			<input type="password" name = "password" required />
 			<span>Password</span>
 		</div>
 		<div class="custom-form-group">

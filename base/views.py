@@ -1,30 +1,40 @@
+from django.db.models.expressions import F
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Vendor, ExpenseID, Bill, BillImage
 from decimal import Decimal
 from django.http import JsonResponse
+
+from django.contrib.auth.decorators import login_required
 import json
 
 def loginView(request):
     if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        print(email,password)
-        user = authenticate(request,email = email,password = password)
-        if user is not None:
-            login(request,user)
-            return render(request,'base/login.html',{"data":"hello"})
-        else:
-            print('nope')
+        try:
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            print(email,password)
+            user = authenticate(request,email = email,password = password)
+            print(user)
+            if user is not None:
+                login(request,user)
+                return redirect('getVendors')
+                
+            else:
+                return render(request,'base/login.html',{"data":"wrong"})
+        except Exception as e:
+            print(e)
     else:
         return render(request,'base/login.html',{})
-
+    
+@login_required(login_url='/login/')
 def getVendors(request):
     vendors = Vendor.objects.all()
     return render(request, 'base/vendorsList.html', {'vendors': vendors})
 
+@login_required(login_url='/login/')
 def addVendor(request):
     if request.method=="POST":
         data=request.POST
@@ -35,12 +45,14 @@ def addVendor(request):
     
     return render(request,'base/vendorsList.html')
 
+@login_required(login_url='/login/')
 def vendorDetails(request,vendorid):
     vendor = Vendor.objects.get(pk=vendorid)
     expenseIds = vendor.expense_ids.all()
     allExpenseIds = ExpenseID.objects.all()
     return render(request,'base/vendorDetails.html',{'vendor':vendor,'expenseIds':expenseIds,'allExpenseIds':allExpenseIds})
 
+@login_required(login_url='/login/')
 def getExpenseIdsForVendor(request):
     if request.method=='POST':
         data = request.POST
@@ -51,7 +63,8 @@ def getExpenseIdsForVendor(request):
         for e in eids:
             data[e.epattern] = e.eid
         return JsonResponse(data)
-
+    
+@login_required(login_url='/login/')
 def createExpenseID(request):
     if request.method == "POST":
         data = request.POST
@@ -65,6 +78,7 @@ def createExpenseID(request):
         return render(request,'base/ExpenseIdAdded.html')
     return render(request,'base/createExpenseId.html')
     
+@login_required(login_url='/login/')    
 def addExpenseID(request):
     if request.method=="POST":
         data=request.POST
@@ -76,18 +90,20 @@ def addExpenseID(request):
     return render(request,'base/vendorDetails.html')
 
 
+@login_required(login_url='/login/')
 def addBill(request):
     vendors = Vendor.objects.all().values('name','expense_ids__eid')
     vendorNames = Vendor.objects.all().values('name').distinct()
     return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames})
 
+@login_required(login_url='/login/')
 def addBillVendor(request,vendorid):
     vendor = Vendor.objects.get(pk=vendorid)
     vendors = Vendor.objects.all().values('name','expense_ids__eid')
     vendorNames = Vendor.objects.all().values('name').distinct()
     return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames})
 
-
+@login_required(login_url='/login/')
 def saveBill(request):
     try:
         data = request.POST 
@@ -142,7 +158,24 @@ def viewBills(request):
         'quantity','rate','amount','gst','other',
         'total_amount','due_payment','paid'
         )
-    print(bills)
     return render(request,'base/viewbills.html',{"bills":bills})
 
-    
+
+@login_required(login_url='/login/')    
+def sendImages(request):
+    data = request.POST
+    x = {}
+    bill = request.POST.get('bill')
+    images = BillImage.objects.filter(bill__invoice_num = bill)
+    # img = str(images)
+    for e in images:
+        print(e.image.url)
+        x[bill] = str(e.image.url)
+
+    return JsonResponse(x)
+
+@login_required(login_url='/login/')
+def logoutView(request):
+    print("akbdkjasdjk")
+    logout(request)
+    return redirect('login')
