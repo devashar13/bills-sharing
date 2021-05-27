@@ -6,21 +6,24 @@
    }
 body{
     background: #fff;
+	overflow: hidden;
 }
 .main-container{
     position: relative;
     width: 100%;  height: 100vh;
     background: linear-gradient(180deg , #fff 0% 50%, #4bace4 50% 100%);
 }
-.form-card{
+.custom-card{
     position: absolute;
     top: 50%;   left: 50%;
     transform: translate(-50%,-50%);
-    width: 500px;
-    padding: 40px 20px 0;
+    padding: 40px 20px;
     box-shadow: 0 0 20px rgba(0,0,0,.5);
     box-sizing: border-box;
     background: #fff;
+	max-height: 95vh;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 .form-heading{
     font-size: 30px;
@@ -32,12 +35,12 @@ body{
 .custom-form{
     position: relative;
 }
-.form-group{
+.custom-form-group{
     position: relative;
     margin: 40px 0;
     width: 100%;
 }
-.form-group input, .form-group textarea{
+.custom-form-group input, .custom-form-group textarea{
     position: relative;
     border: none;   outline: none;
     width: 100%;
@@ -47,7 +50,7 @@ body{
     color: #726b6b;
     background: transparent;
 }
-.form-group span{
+.custom-form-group span{
     color: #726b6b;  background: transparent;
     display: inline-block;
     padding: 3px 10px;
@@ -58,22 +61,43 @@ body{
     transition: .5s;
     z-index: -1;
 }
-.form-group input:focus + span ,
-.form-group textarea:focus + span,
-.form-group input:valid + span ,
-.form-group textarea:valid + span{
+.custom-form-group input:focus + span ,
+.custom-form-group textarea:focus + span,
+.custom-form-group input:valid + span ,
+.custom-form-group textarea:valid + span{
     color: #fff;  background: #025175;
     top: -20px;
 }
-.form-group:last-child{
+.custom-form-group:last-child{
     text-align: right;
     margin: 20px 0;
 }
-.form-group input[type = 'submit']{
+.custom-form-group input[type = 'submit']{
     width: auto;
     border: none;
     color: #fff;  background: #025175;
     padding: 10px 20px;
     border-radius: 50px;
     cursor: pointer;
+}
+
+
+#tbl {
+	overflow-x: auto;
+	width: 100%;
+}
+
+.login-form-card {
+	width: 100%;
+    max-width: 500px;
+}
+
+
+.vendors-list-card, .vendor-details-card {
+	width: 100%;
+    max-width: 900px;
+}
+
+.vendor-name {
+	min-width: 200px;
 }

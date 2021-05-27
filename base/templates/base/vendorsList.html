@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %} {% block 'card-content' %}
+<div class="custom-card vendors-list-card">
+    <div style="overflow-y: scroll; overflow-x: none;">
+		<div class="add-vendor d-flex justify-content-end">
+			<button class="btn btn-success mb-3">ADD VENDOR</button>
+		</div>
+        {% if vendors %}
+        <div>
+            <div class="custom-form-group">
+                <input
+                    type="text"
+                    id="filterByName"
+                    onkeyup="filterFunction()"
+                    required
+                />
+                <span>Filter by Name</span>
+            </div>
+        </div>
+        <table class="table table-striped" id="tbl">
+            <thead>
+                <tr>
+                    <th class="text-center">Vendors List</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                {% for vendor in vendors %}
+                <tr>
+                    <td class="vendor-name text-center">{{vendor.name}}</td>
+                    <td>
+						<a href="{% url 'vendorDetails' vendorid=vendor.id %}"><button class="btn btn-primary">VIEW DETAILS</button></a>
+                    </td>
+                    <td>
+						<button class="btn btn-primary">VIEW BILLS</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-success">ADD BILL</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="d-flex justify-content-center align-items-center">
+            <h1>NO VENDORS AVAILABLE</h1>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script>
+    let num = table.getElementsByTagName('tr').length;
+    function filterFunction() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('filterByName');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('tblbody');
+        li = table.getElementsByTagName('tr');
+        // Loop through all list items, and hide those who don't match the search query
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName('td')[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = '';
+                num++;
+            } else {
+                li[i].style.display = 'none';
+                num--;
+            }
+        }
+        if (num == 1) {
+            document.getElementById('nva').style.display = 'none';
+        } else {
+            document.getElementById('nva').style.display = '';
+        }
+    }
+</script>
+{% endblock %}

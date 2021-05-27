@@ -18,5 +18,9 @@ from django.urls import path
 from base.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("login/",loginView,name = "login")
+    path("login/",loginView,name = "login"),
+    path("vendors/",getVendors,name = "getVendors"),
+    path("addvendor/",addVendor,name = "addVendor"),
+    path("vendordetail/<int:vendorid>/",vendorDetails,name="vendorDetails"),
+    path("createexpenseid",createExpenseID,name="createExpenseID")
 ]
