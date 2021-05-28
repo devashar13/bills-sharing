@@ -167,6 +167,25 @@
     )
 
     })
+    function filterFunction() {
+      // Declare variables
+      var input, filter, ul, li, a, i, txtValue;
+      input = document.getElementById('filterByName');
+      filter = input.value.toUpperCase();
+      table = document.getElementById("tblbody");
+      li = table.getElementsByTagName('tr');
+    console.log(input)
+      // Loop through all list items, and hide those who don't match the search query
+      for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("td")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          li[i].style.display = "";
+        } else {
+          li[i].style.display = "none";
+        }
+      }
+    }
 </script>  
 
 

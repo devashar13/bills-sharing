@@ -36,7 +36,10 @@ def loginView(request):
 @login_required(login_url='/login/')
 def homeView(request):
     userTypeList = list(request.user.type)
-    return render(request,"base/home.html",{'userType':userTypeList})
+    if 'supervisor' in userTypeList:
+        return render(request,"base/home.html",{'userType':userTypeList})
+    else:
+        return redirect("addBill")
     
 @login_required(login_url='/login/')
 def getVendors(request):
@@ -63,7 +66,8 @@ def addVendor(request):
         
             return render(request,'base/vendorsList.html')
         else:
-            return redirect('addBill')   
+            return redirect('addBill')  
+     
 
 @login_required(login_url='/login/')
 def vendorDetails(request,vendorid):
@@ -96,8 +100,8 @@ def getExpenseIdsForVendor(request):
 def createExpenseID(request):
     userTypeList = list(request.user.type)
     print(userTypeList)
-    if request.method == "POST":
-        if "supervisor" in userTypeList:
+    if "supervisor" in userTypeList:
+        if request.method == "POST":
             data = request.POST
             eid = data.get("eid")
             epattern = data.get("epattern")
@@ -107,21 +111,25 @@ def createExpenseID(request):
             )
             expense.save()
             return render(request,'base/ExpenseIdAdded.html',{'userType':userTypeList})
-    return render(request,'base/createExpenseId.html',{'userType':userTypeList})
+        return render(request,'base/createExpenseId.html',{'userType':userTypeList})
+    else:
+        return redirect("addBill")
     
 @login_required(login_url='/login/')    
 def addExpenseID(request):
-    if request.method=="POST":
-        userTypeList = list(request.user.type)
-        print(userTypeList)
-        if "supervisor" in userTypeList:
+    userTypeList = list(request.user.type)
+    print(userTypeList)
+    if "supervisor" in userTypeList:
+        if request.method=="POST":
             data=request.POST
             selectedeid=data.get("selectedeid")
             vendorid = data.get("vendorid")
             vendor = Vendor.objects.get(pk=vendorid)
             vendor.expense_ids.add(ExpenseID.objects.get(epattern=selectedeid))
     
-    return render(request,'base/vendorDetails.html')
+        return render(request,'base/vendorDetails.html')
+    else:
+        return redirect("addBill")
 
 
 @login_required(login_url='/login/')
@@ -147,34 +155,43 @@ def addBill(request):
 @login_required(login_url='/login/')
 def addBillVendor(request,vendorid):
     userTypeList = list(request.user.type)
-    vendor = Vendor.objects.get(pk=vendorid)
-    vendors = Vendor.objects.all().values('name','expense_ids__eid')
-    vendorNames = Vendor.objects.all().values('name').distinct()
-    return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+    if 'supervisor' in userTypeList:
+        vendor = Vendor.objects.get(pk=vendorid)
+        vendors = Vendor.objects.all().values('name','expense_ids__eid')
+        vendorNames = Vendor.objects.all().values('name').distinct()
+        return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+    else:
+        return redirect("addBill")
 
+@login_required(login_url='/login/')
 def selectEmployee(request):
-    supervisor = request.user
-    emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
     userTypeList = list(request.user.type)
-    return render(request,'base/selectemps.html',{'emps':emps,"userType":userTypeList})
-
-def employeeVendor(request,empid):
-    # supervisor = request.user
-    # print(emp)
-    # emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
-    x = []
-    y = []
-    allocated = EmployeeAdditional.objects.filter(id = empid).values('vendor__name','vendor__id').distinct()
-    vendorNames = Vendor.objects.all().values('name').distinct()
-    for i in range(len(allocated)):
-        x.append(allocated[i]['vendor__name'])
-    for m in range(len(vendorNames)):
-        y.append(vendorNames[m]['name'])
-    not_allocated = list(set(x).symmetric_difference(set(y)))
-    vendorName = Vendor.objects.filter(name__in = not_allocated).values('id','name')
+    print(userTypeList)
+    if "supervisor" in userTypeList:
+        supervisor = request.user
+        emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
+        userTypeList = list(request.user.type)
+        return render(request,'base/selectemps.html',{'emps':emps,"userType":userTypeList})
+    else:
+        return redirect('addBill')
     
-    # print(vendorNames)
-    return render(request,'base/employeevendor.html',{'allocated':allocated,'vendornames':vendorName,"empid":empid})
+@login_required(login_url='/login/')
+def employeeVendor(request,empid):
+    userTypeList = list(request.user.type)
+    if "supervisor" in userTypeList:
+        x = []
+        y = []
+        allocated = EmployeeAdditional.objects.filter(id = empid).values('vendor__name','vendor__id').distinct()
+        vendorNames = Vendor.objects.all().values('name').distinct()
+        for i in range(len(allocated)):
+            x.append(allocated[i]['vendor__name'])
+        for m in range(len(vendorNames)):
+            y.append(vendorNames[m]['name'])
+        not_allocated = list(set(x).symmetric_difference(set(y)))
+        vendorName = Vendor.objects.filter(name__in = not_allocated).values('id','name')
+        return render(request,'base/employeevendor.html',{'allocated':allocated,'vendornames':vendorName,"empid":empid,"userType":userTypeList})
+    else:
+        return redirect("addBill")
 
 def saveEmployeeVendors(request):
     data=request.POST
@@ -255,6 +272,7 @@ def saveBill(request):
         print("HELLO")
         print(e)
 
+@login_required(login_url='/login/')
 def viewBills(request):
     userTypeList = list(request.user.type)
     bills = Bill.objects.values(
@@ -275,14 +293,17 @@ def vendorBills(request,vendorid):
         bills  = Bill.objects.filter(vendor__id = vendorid)
         print(bills)
         return render(request,'base/viewbills.html',{'selectedvendor':vendor,'selectbills':bills,"userType":userTypeList})
+    else: 
+        return redirect("addBill")
 
 @login_required(login_url='/login/')    
 def sendImages(request):
     data = request.POST
     x = {}
     bill = request.POST.get('bill')
+    print(bill)
     images = BillImage.objects.filter(bill__invoice_num = bill)
-    # img = str(images)
+    print(images)
     for e in images:
         print(e.image.url)
         x[bill] = str(e.image.url)
@@ -291,6 +312,5 @@ def sendImages(request):
 
 @login_required(login_url='/login/')
 def logoutView(request):
-    print("akbdkjasdjk")
     logout(request)
     return redirect('login')

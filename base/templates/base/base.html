@@ -28,6 +28,11 @@
         ></script>
         <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
         <title>Share Bills</title>
+        <style>
+          .cost{
+      text-align: right; 
+  }
+        </style>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
@@ -49,12 +54,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{%url 'viewBills'%}">View All Bills</a>
                   </li>
-
                   <li class="nav-item">
-                      <a class="nav-link" href="{%url 'viewBills'%}"
-                          >View All Bills</a
-                      >
+                    <a class="nav-link" href="{%url 'addBill'%}">Add Bill</a>
                   </li>
+
                 {% if 'supervisor' in userType %}
                 <li class="nav-item">
                     <a class="nav-link" href="{%url 'getVendors'%}">Vendors Management</a>

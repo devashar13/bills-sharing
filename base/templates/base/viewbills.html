@@ -27,16 +27,10 @@
             integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
             crossorigin="anonymous"
         ></script>
-        <link
-            rel="stylesheet"
-            href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"
-        />
-        <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-        <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
         <script src="{% static 'js/tableHTMLExport.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.10/jspdf.plugin.autotable.min.js"></script>
@@ -135,7 +129,7 @@
                 >
             </div>
         </nav>
-        <div class="container py-5">
+        <div class="container py-5" >
             <div class="mb-3">
                 <div class="d-inline-block">
                     <label for="bill-dt">Invoive Date: </label>
@@ -235,9 +229,7 @@
                                 id="{{ bill.invoice_num }}"
                             />
                         </td>
-                        <td class="invoice" style="cursor: pointer">
-                            {{bill.invoice_num}}
-                        </td>
+                        <td class="invoice" style="cursor: pointer">{{bill.invoice_num}}</td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
                         <td>{{bill.quantity}}</td>
@@ -258,9 +250,7 @@
                                 id="{{ bill.invoice_num }}"
                             />
                         </td>
-                        <td class="invoice" style="cursor: pointer">
-                            {{bill.invoice_num}}
-                        </td>
+                        <td class="invoice" style="cursor: pointer">{{bill.invoice_num}}</td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
                         <td>{{bill.quantity}}</td>
@@ -304,26 +294,13 @@
             </div>
         </div>
     </body>
+    <script>
+        document.querySelector('body').style.overflowY = "scroll"
+    </script>
 
     <script>
         $(document).ready(function () {
-            $('#myTable').DataTable({
-                dom: 'Bfrtip',
-                bPaginate: false,
-                columnDefs: [
-                    {
-                        orderable: false,
-                        // className: 'select-checkbox',
-                        targets: 0,
-                    },
-                ],
-                select: {
-                    style: 'os',
-                    selector: 'td:first-child',
-                },
-                order: [[1, 'asc']],
-                buttons: [],
-            });
+           
         });
         //   $(document).ready(function() {
 
@@ -419,7 +396,7 @@
     </script>
     <script>
         $('.invoice').dblclick(function () {
-            dataimg = $(this).html();
+            dataimg = $(this).text();
             console.log(dataimg);
             $.ajax({
                 headers: { 'X-CSRFToken': '{{csrf_token}}' },

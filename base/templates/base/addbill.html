@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %} {% block 'card-content' %}
+
 <div class="custom-card login-form-card" >
     <h1 class="form-heading">Enter Invoice</h1>
     <form class="custom-from" action="/savebill/" method="POST" enctype="multipart/form-data">
@@ -64,23 +65,23 @@
 			<span>Ex To Date</span>
 		</div>
         <div class="custom-form-group">
-            <input name="qty" id="qty" type="number" required/>
+            <input class="cost" name="qty" id="qty" type="number" required/>
 			<span>Quantity</span>
 		</div>
         <div class="custom-form-group">
-            <input step="0.01" name="rate" id="rate" type="number" required/>
+            <input class="cost" step="0.01" name="rate" id="rate" type="number" required/>
 			<span>Rate</span>
 		</div>
         <div class="custom-form-group">
-            <input step="0.01" name="amount" id="amount" type="number" required/>
+            <input class="cost" step="0.01" name="amount" id="amount" type="number" required/>
 			<span>Amount</span>
 		</div>
         <div class="custom-form-group">
-            <input step="0.01" name="gst" id="gst" type="number" required/>
+            <input class="cost" step="0.01" name="gst" id="gst" type="number" required/>
 			<span>GST</span>
 		</div>
         <div class="custom-form-group">
-            <input  step="0.01" name="total" id="total" type="number" required/>
+            <input class="cost" step="0.01" name="total" id="total" type="number" required/>
 			<span>Total Amount</span>
 		</div>
         <div class="custom-form-group">
