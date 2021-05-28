@@ -5,19 +5,20 @@
         {% csrf_token %}
         <div class="custom-form-group">
             <p class="b-span">Vendor Name</p>
+           
 			<select name="vendors-name" id="vendors-names">
                 {% if selectedvendor %}
                     {% for vendor in vendorNames %}
-                        {% if vendor.name == selectedvendor.name %}
-                            <option value="{{vendor.name}}" selected>{{vendor.name}}</option>
+                        {% if vendor.vendor__name == selectedvendor.name %}
+                            <option value="{{vendor.vendor__name}}" selected>{{vendor.vendor__name}}</option>
                         {% else %}
-                            <option value="{{vendor.name}}">{{vendor.name}}</option>
+                            <option value="{{vendor.vendor__name}}">{{vendor.vendor__name}}</option>
                         {% endif %}
                     {% endfor %}
                 {% else %}
                     <option selected>Select Vendor Name</option>
                     {% for vendor in vendorNames %}
-                        <option value="{{vendor.name}}">{{vendor.name}}</option>
+                        <option value="{{vendor.vendor__name}}">{{vendor.vendor__name}}</option>
                     {% endfor %}
                 {% endif %}
             </select>

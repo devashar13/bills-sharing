@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db.models.fields import IntegerField
-from django.db.models.fields.related import ForeignKey, OneToOneField
+from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
 from django.utils import timezone
 # Create your models here.
 
@@ -75,11 +75,7 @@ class EmployeeManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(Q(type__contains = CustomUser.Types.EMPLOYEE))
 
-class Employee(CustomUser):
-    default_type = CustomUser.Types.EMPLOYEE
-    objects = EmployeeManager()
-    class Meta:
-        proxy = True
+
     
 class Supervisor(CustomUser):
     default_type = CustomUser.Types.SUPERVISOR
@@ -96,17 +92,12 @@ class Employee(CustomUser):
     def showSupervisor(self):
         return self.employeeadditional
 
-class EmployeeAdditional(models.Model):
-    user = OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="emp")
-    supervisor = ForeignKey(Supervisor,on_delete=models.CASCADE,related_name="empsupervisor")
-
 class ExpenseID(models.Model):
     eid = models.CharField(max_length=225)
     epattern = models.CharField(max_length=50)
 
     def __str__(self):
         return self.eid
-
 class Vendor(models.Model):
     name = models.CharField(max_length=225)
     email = models.EmailField(unique=True,null=True,blank=True)
@@ -114,6 +105,13 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.name
+class EmployeeAdditional(models.Model):
+    user = OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="emp")
+    supervisor = ForeignKey(Supervisor,on_delete=models.CASCADE,related_name="empsupervisor")
+    vendor  = ManyToManyField(Vendor,null=True,blank=True)
+
+
+
 
 class BillOther(models.Model):
     description = models.CharField(max_length=255)

@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse, request
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Vendor, ExpenseID, Bill, BillImage
+from .models import Employee, EmployeeAdditional, Vendor, ExpenseID, Bill, BillImage
 from decimal import Decimal
 from django.http import JsonResponse
 
@@ -122,9 +122,12 @@ def addExpenseID(request):
 @login_required(login_url='/login/')
 def addBill(request):
     userTypeList = list(request.user.type)
-    vendors = Vendor.objects.all().values('name','expense_ids__eid')
-    vendorNames = Vendor.objects.all().values('name').distinct()
-    print(userTypeList)
+    
+    # vendors = Vendor.objects.all().values('name','expense_ids__eid')
+    # vendorNames = Vendor.objects.all().values('name').distinct()
+    vendorNames = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name').distinct()
+    vendors = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name','vendor__expense_ids__eid')
+    print(vendors)
     return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
 
         
