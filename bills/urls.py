@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("login/",loginView,name = "login"),
     path("logout/",logoutView,name = "logout"),
+    path("home/",homeView,name="home"),
     path("vendors/",getVendors,name = "getVendors"),
     path("addvendor/",addVendor,name = "addVendor"),
     path("vendordetail/<int:vendorid>/",vendorDetails,name="vendorDetails"),

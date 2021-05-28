@@ -32,6 +32,10 @@ def loginView(request):
             print(e)
     else:
         return render(request,'base/login.html',{})
+
+@login_required(login_url='/login/')
+def homeView(request):
+    return render(request,"base/home.html")
     
 @login_required(login_url='/login/')
 def getVendors(request):
