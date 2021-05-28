@@ -1,294 +1,356 @@
-{% load static   %}
+{% load static %}
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-        crossorigin="anonymous"
-    />
-    
-    <script
-        src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-        crossorigin="anonymous"
-    ></script>
-    <link
-        href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css"
-        rel="stylesheet"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
-        integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
-        crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
-    <title>Share Bills</title>
-    <style>
-      .dataTables_filter {
-        display: none !important;
-}
- .modal-dialog { /* Width */
-    max-width: 100%;
-    max-height: 100%;
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+            integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+            crossorigin="anonymous"
+        />
 
-    width: auto !important;
-   
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"
+        ></script>
+        <link
+            href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css"
+            rel="stylesheet"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+            integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+            crossorigin="anonymous"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"
+        />
+        <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+        <title>Share Bills</title>
+        <style>
+            .dataTables_filter {
+                display: none !important;
+            }
+            .modal-dialog {
+                /* Width */
+                max-width: 100%;
+                max-height: 100%;
 
-    display: inline-block;
-}
-.image{
-  max-height: auto;
-}
-.modal {
-  z-index: -1;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-}
+                width: auto !important;
 
-.modal-open .modal {
-   z-index: 1050;
-}
-    </style>
-</head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Bills</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          
-          <li class="nav-item">
-            <a class="nav-link" href="{%url 'addBill'%}">Add Bill</a>
-          </li>
-          {% if 'supervisor' in userType %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{%url 'getVendors'%}">Dashboard</a>
-                  </li>
-        {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="{%url 'logout'%}">Logout</a>
-          </li>
+                display: inline-block;
+            }
+            .image {
+                max-height: auto;
+            }
+            .modal {
+                z-index: -1;
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+            }
 
-
-        </ul>
-      </div>
-    </nav>
-    <div class="container py-5">
-      <label for="bill-dt">
-        <input class="filter"  name="bill-dt" id="search1" type="date" />
-      </label>
-      <label for="ex-from-date">
-        <input class="filter"  name="ex-from-date" id="search2" type="date" />
-      </label>
-      <label for="ex-to-date">
-        <input class="filter"  name="ex-to-date" id="search3" type="date" />
-      </label>
-      <table id = "myTable" class="table table-responsive table-hover table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>Bill No</th>
-            <th>Vendor</th>
-            <th>Exp Id</th>
-            <th>Bill Amt</th>
-            <th>Invoice Date</th>
-            <th>Expense From</th>
-            <th>Expense To</th>
-            <th>Status</th>
-
-          </tr>
-        </thead> 
-        <tbody id="datarow">
-          {% if selectedvendor %}
-          {% for bill in selectbills %}
-          <tr>
-            <td class = "invoice" style="cursor: pointer;" >{{bill.invoice_num}}</td>
-            <td>{{bill.vendor__name}}</td>
-            <td>{{bill.expense_id}}</td>
-            <td>{{bill.amount}}</td>
-            <td class = "invdt">{{bill.invoice_date}}</td>
-            <td class="exfrom">{{bill.exp_from_date}}</td>
-            <td class="exto">{{bill.exp_to_date}}</td>
-            <td class="paid">{{bill.paid}}</td>
-          </tr>
-          {% endfor %}
-          {% else %}
-          {% for bill in bills %}
-          <tr>
-            <td class = "invoice" style="cursor: pointer;" >{{bill.invoice_num}}</td>
-            <td>{{bill.vendor__name}}</td>
-            <td>{{bill.expense_id}}</td>
-            <td>{{bill.amount}}</td>
-            <td class = "invdt">{{bill.invoice_date}}</td>
-            <td class="exfrom">{{bill.exp_from_date}}</td>
-            <td class="exto">{{bill.exp_to_date}}</td>
-            <td class="paid">{{bill.paid}}</td>
-          </tr>
-          {% endfor %}
-          {% endif %}
-
-        </tbody>
-        
-      </table>
-    </div>
-    <div tabindex="-1" class="modal fade" id="myModal" role="dialog">
-      <div class="modal-dialog">
-      
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header" id="modal-header">
-            <h4 class="modal-title" id="modal-title">
-              Bill Image
-            </h4>
-            <button type="button" class="close" 
-                    data-dismiss="modal">
-                ×
+            .modal-open .modal {
+                z-index: 1050;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Bills</a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
             </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'addBill'%}"
+                            >Add Bill</a
+                        >
+                    </li>
+                    {% if 'supervisor' in userType %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'getVendors'%}"
+                            >Dashboard</a
+                        >
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'logout'%}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container py-5">
+            <!-- <label for="bill-dt">
+                <input class="filter" name="bill-dt" id="search1" type="date" />
+            </label>
+            <label for="ex-from-date">
+                <input
+                    class="filter"
+                    name="ex-from-date"
+                    id="search2"
+                    type="date"
+                />
+            </label>
+            <label for="ex-to-date">
+                <input
+                    class="filter"
+                    name="ex-to-date"
+                    id="search3"
+                    type="date"
+                />
+            </label> -->
+
+            <input
+                name="tablefilter"
+                type="checkbox"
+                value="Paid"
+                id="tablefilter1"
+                checked
+            />
+            <label for="tablefilter1">Paid</label>
+            <input
+                name="tablefilter"
+                type="checkbox"
+                value="Unpaid"
+                id="tablefilter2"
+                checked
+            />
+            <label for="tablefilter2">Unpaid</label>
+            <div>
+                <button class="btn btn-success" id="download-csv">CSV</button>
+            </div>
+            <table
+                id="myTable"
+                class="table table-responsive table-hover table-striped"
+                style="border-bottom: 0cm !important"
+            >
+                <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Bill No</th>
+                        <th>Vendor</th>
+                        <th>Exp Id</th>
+                        <th>Bill Amt</th>
+                        <th>Invoice Date</th>
+                        <th>Expense From</th>
+                        <th>Expense To</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody">
+                    {% if selectedvendor %} {% for bill in selectbills %}
+                    <tr>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="select-rows"
+                                id="{{ bill.invoice_num }}"
+                            />
+                        </td>
+                        <td class="invoice" style="cursor: pointer">
+                            {{bill.invoice_num}}
+                        </td>
+                        <td>{{bill.vendor__name}}</td>
+                        <td>{{bill.expense_id}}</td>
+                        <td>{{bill.amount}}</td>
+                        <td class="invdt">{{bill.invoice_date}}</td>
+                        <td class="exfrom">{{bill.exp_from_date}}</td>
+                        <td class="exto">{{bill.exp_to_date}}</td>
+                        <td class="paid">{{bill.paid}}</td>
+                    </tr>
+                    {% endfor %} {% else %} {% for bill in bills %}
+                    <tr>
+                        <td>
+                            <input
+                                type="checkbox"
+                                name="select-rows"
+                                id="{{ bill.invoice_num }}"
+                            />
+                        </td>
+                        <td class="invoice" style="cursor: pointer">
+                            {{bill.invoice_num}}
+                        </td>
+                        <td>{{bill.vendor__name}}</td>
+                        <td>{{bill.expense_id}}</td>
+                        <td>{{bill.amount}}</td>
+                        <td class="invdt">{{bill.invoice_date}}</td>
+                        <td class="exfrom">{{bill.exp_from_date}}</td>
+                        <td class="exto">{{bill.exp_to_date}}</td>
+                        <td class="paid">{{bill.paid}}</td>
+                    </tr>
+                    {% endfor %} {% endif %}
+                </tbody>
+            </table>
         </div>
-          <div class="modal-body">
-           
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
+        <div tabindex="-1" class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" id="modal-header">
+                        <h4 class="modal-title" id="modal-title">Bill Image</h4>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                        >
+                            ×
+                        </button>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-      </div>
-    </div>
-  </body>
+    </body>
 
-<script>
-  $(document).ready(function() {
-    $('#myTable').DataTable( {
-        dom: 'Bfrtip',
-        "bPaginate": false,
-        columnDefs: [ {
-            orderable: false,
-            className: 'select-checkbox',
-            targets:   0
-        } ],
-        select: {
-            style:    'os',
-            selector: 'td:first-child'
-        },
-        order: [[ 1, 'asc' ]],
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5',
-            
-        ]
-    } );
-} );
-//   $(document).ready(function() {
-    
-//     $('#myTable').DataTable( {
-//         dom: 'Bfrtip',
-//         "bPaginate": false,
-        
-        
-//     } );
-// } );
-  $('.invdt').each(function() {
-    x = ($(this).html())
-    inv_date = new Date(x)
-    var day = inv_date.getDate();
-    var month = inv_date.getMonth() + 1
-    var year = inv_date.getFullYear();
-    if (String(month).length < 2){
-      month = '0' + month;
-    }
-    var today = year+'-'+month+'-'+day;
-    $(this).html(today)
-});
-$('.exfrom').each(function(){
-    x = ($(this).html())
-    inv_date = new Date(x)
-    var day = inv_date.getDate();
-    var month = inv_date.getMonth() + 1
-    var year = inv_date.getFullYear();
-    if (String(month).length < 2){
-      month = '0' + month;
-    }
-    var today = year+'-'+month+'-'+day;
-    $(this).html(today) 
-});
-$('.exto').each(function() {
-    x = ($(this).html())
-    inv_date = new Date(x)
-    var day = inv_date.getDate();
-    var month = inv_date.getMonth() + 1
-    var year = inv_date.getFullYear();
-    if (String(month).length < 2){
-      month = '0' + month;
-    }
-    var today = year+'-'+month+'-'+day;
-    $(this).html(today)
-});
-$('.paid').each(function() {
-    x = ($(this).html())
-    if(x == "False"){
-    $(this).html("Unpaid")
-    }else{
-    $(this).html("Paid")
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                dom: 'Bfrtip',
+                bPaginate: false,
+                columnDefs: [
+                    {
+                        orderable: false,
+                        className: 'select-checkbox',
+                        targets: 0,
+                    },
+                ],
+                select: {
+                    style: 'os',
+                    selector: 'td:first-child',
+                },
+                order: [[1, 'asc']],
+                buttons: [],
+            });
+        });
+        //   $(document).ready(function() {
 
-    }
-});
-</script>
-<script>
+        //     $('#myTable').DataTable( {
+        //         dom: 'Bfrtip',
+        //         "bPaginate": false,
 
-function performReset() {
-  document.getElementById("search1").value = "";
-  document.getElementById("search2").value = "";
-  document.getElementById("search3").value = "";
-  filterTable(event, 0);
-}
+        //     } );
+        // } );
+        $('.invdt').each(function () {
+            x = $(this).html();
+            inv_date = new Date(x);
+            var day = inv_date.getDate();
+            var month = inv_date.getMonth() + 1;
+            var year = inv_date.getFullYear();
+            if (String(month).length < 2) {
+                month = '0' + month;
+            }
+            var today = year + '-' + month + '-' + day;
+            $(this).html(today);
+        });
+        $('.exfrom').each(function () {
+            x = $(this).html();
+            inv_date = new Date(x);
+            var day = inv_date.getDate();
+            var month = inv_date.getMonth() + 1;
+            var year = inv_date.getFullYear();
+            if (String(month).length < 2) {
+                month = '0' + month;
+            }
+            var today = year + '-' + month + '-' + day;
+            $(this).html(today);
+        });
+        $('.exto').each(function () {
+            x = $(this).html();
+            inv_date = new Date(x);
+            var day = inv_date.getDate();
+            var month = inv_date.getMonth() + 1;
+            var year = inv_date.getFullYear();
+            if (String(month).length < 2) {
+                month = '0' + month;
+            }
+            var today = year + '-' + month + '-' + day;
+            $(this).html(today);
+        });
+        $('.paid').each(function () {
+            x = $(this).html();
+            if (x == 'False') {
+                $(this).html('Unpaid');
+            } else {
+                $(this).html('Paid');
+            }
+        });
+    </script>
+    <script>
+        function performReset() {
+            document.getElementById('search1').value = '';
+            document.getElementById('search2').value = '';
+            document.getElementById('search3').value = '';
+            filterTable(event, 0);
+        }
 
-function filterTable(event, index) {
-  var filter = event.target.value.toUpperCase();
-  var rows = document.querySelector("#mytable tbody").rows;
-  for (var i = 0; i < rows.length; i++) {
-    var firstCol = rows[i].cells[4].textContent.toUpperCase();
-    var secondCol = rows[i].cells[5].textContent.toUpperCase();
-    var thirdCol = rows[i].cells[6].textContent.toUpperCase();
-    if ((firstCol.indexOf(filter) > -1 && index == 0) || (secondCol.indexOf(filter) > -1 && index == 1) || (thirdCol.indexOf(filter) > -1 && index == 2)) {
-      rows[i].style.display = "";
-    } else {
-      rows[i].style.display = "none";
-    }      
-  }
-}
+        function filterTable(event, index) {
+            var filter = event.target.value.toUpperCase();
+            var rows = document.querySelector('#mytable tbody').rows;
+            for (var i = 0; i < rows.length; i++) {
+                var firstCol = rows[i].cells[4].textContent.toUpperCase();
+                var secondCol = rows[i].cells[5].textContent.toUpperCase();
+                var thirdCol = rows[i].cells[6].textContent.toUpperCase();
+                if (
+                    (firstCol.indexOf(filter) > -1 && index == 0) ||
+                    (secondCol.indexOf(filter) > -1 && index == 1) ||
+                    (thirdCol.indexOf(filter) > -1 && index == 2)
+                ) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
 
-document.querySelectorAll('input.filter').forEach(function(el,idx){
-  el.addEventListener('change', function(e){
-    filterTable(e, idx);
-  }, false);
-});
-</script>
-<script>
-
-$(".invoice").dblclick(function(){
-  dataimg = $(this).html()
-  console.log(dataimg)
-  $.ajax({
+        document.querySelectorAll('input.filter').forEach(function (el, idx) {
+            el.addEventListener(
+                'change',
+                function (e) {
+                    filterTable(e, idx);
+                },
+                false
+            );
+        });
+    </script>
+    <script>
+        $('.invoice').dblclick(function () {
+            dataimg = $(this).html();
+            console.log(dataimg);
+            $.ajax({
                 headers: { 'X-CSRFToken': '{{csrf_token}}' },
                 type: 'POST',
                 url: '/sendImages/',
@@ -297,33 +359,76 @@ $(".invoice").dblclick(function(){
                     bill: dataimg,
                 },
                 success: function (response) {
-                    console.log(dataimg)
+                    console.log(dataimg);
                     console.log(response[dataimg]);
-                    $('.modal-content .modal-body').html("")
-                    $(".modal-footer").html("")
+                    $('.modal-content .modal-body').html('');
+                    $('.modal-footer').html('');
                     html = `<img 
                     class="img-responsive" 
                      id = "image" 
                     src = '${response[dataimg]}'/>
-                    `
+                    `;
                     footerhtml = `
                     <a href="${response[dataimg]}" download>Download</a>
-                    `
-                    $('.modal-content .modal-body').append(html) 
-                    $(".modal-footer").append(footerhtml)
+                    `;
+                    $('.modal-content .modal-body').append(html);
+                    $('.modal-footer').append(footerhtml);
                     $('#myModal').modal('show');
                 },
-                error:function(e){
-                  
-                  console.log("hekansd")
-                  
-                }
+                error: function (e) {
+                    console.log('hekansd');
+                },
             });
-}); 
-</script>
+        });
+    </script>
 
-   
-<!-- <script type="text/javascript">
+    <script>
+        /* Demo filtering table using checkboxes. Filters against first td value */
+
+        /* Set 'ready' handler' */
+        document.addEventListener('DOMContentLoaded', initFunc);
+
+        /* When document ready, set click handlers for the filter boxes */
+        function initFunc(event) {
+            var filters = document.getElementsByName('tablefilter');
+            for (var i = 0; i < filters.length; i++) {
+                filters[i].addEventListener('click', buildAndExecFilter);
+            }
+        }
+
+        /*
+	This function gets called when clicking on table filter checkboxes.
+	It builds a list of selected values and then filters the table based on that
+*/
+        function buildAndExecFilter() {
+            var show = [];
+            var filters = document.getElementsByName('tablefilter');
+            for (var i = 0; i < filters.length; i++) {
+                if (filters[i].checked) {
+                    show.push(filters[i].value);
+                }
+            }
+            execFilter(show); // Filter based on selected values
+        }
+
+        function execFilter(show) {
+            /* For all rows of table, see if td 0 contains a selected value to filter */
+            var rows = document
+                .getElementById('tablebody')
+                .getElementsByTagName('tr');
+            for (var i = 0; i < rows.length; i++) {
+                var display = ''; // Default to display
+                // If it is not found in the selected filter values, don't show it
+                if (show.indexOf(rows[i].children[8].textContent) === -1) {
+                    display = 'none';
+                }
+                // Update the display accordingly
+                rows[i].style.display = display;
+            }
+        }
+    </script>
+
+    <!-- <script type="text/javascript">
   function exportToExcel(tableID, filename = ''){
       var downloadurl;
       var dataFileType = 'application/vnd.ms-excel';
@@ -356,4 +461,122 @@ $(".invoice").dblclick(function(){
   }
    
   </script> -->
+    <script>
+        function download_csv(csv, filename) {
+            var csvFile;
+            var downloadLink;
+
+            // CSV FILE
+            csvFile = new Blob([csv], { type: 'text/csv' });
+
+            // Download link
+            downloadLink = document.createElement('a');
+
+            // File name
+            downloadLink.download = filename;
+
+            // We have to create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+
+            // Make sure that the link is not displayed
+            downloadLink.style.display = 'none';
+
+            // Add the link to your DOM
+            document.body.appendChild(downloadLink);
+
+            // Lanzamos
+            downloadLink.click();
+        }
+
+        function export_table_to_csv(html, type, filename) {
+            if (type === 'selected') {
+                // const data = document.createElement('table');
+                // data.innerHTML = html;
+                var csv = [];
+                // console.log(data);
+                // var rows = data.querySelectorAll('tr');
+                var rows=[]
+                var intialRows = document.querySelectorAll('table thead tr, table tbody tr');
+                intialRows.forEach((row,i) => {
+                  if(i!==0) {
+                    if(row.querySelector('td input').checked){
+                      rows.push(row)
+                    }
+                  } else {
+                    rows.push(row)
+                  }
+                })
+
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [],
+                        cols = rows[i].querySelectorAll('td, th');
+
+                    for (var j = 1; j < cols.length; j++)
+                        row.push(cols[j].innerText);
+
+                    csv.push(row.join(','));
+                }
+
+                // Download CSV
+                download_csv(csv.join('\n'), filename);
+            } else {
+                var csv = [];
+                var rows = document.querySelectorAll('table thead tr, table tbody tr');
+
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [],
+                        cols = rows[i].querySelectorAll('td, th');
+
+                    for (var j = 1; j < cols.length; j++)
+                        row.push(cols[j].innerText);
+
+                    csv.push(row.join(','));
+                }
+
+                // Download CSV
+                download_csv(csv.join('\n'), filename);
+            }
+        }
+
+        document
+            .getElementById('download-csv')
+            .addEventListener('click', function () {
+                table = `
+                    <thead class="thead-dark">
+                      <tr>
+                          <th></th>
+                          <th>Bill No</th>
+                          <th>Vendor</th>
+                          <th>Exp Id</th>
+                          <th>Bill Amt</th>
+                          <th>Invoice Date</th>
+                          <th>Expense From</th>
+                          <th>Expense To</th>
+                          <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+
+                var checksArray = [];
+                var checkboxes = document.querySelectorAll(
+                    'input[name=select-rows]:checked'
+                );
+                if (checkboxes.length > 0) {
+                    checkboxes.forEach((checkbox) => {
+                        checksArray.push(
+                            checkbox.parentNode.parentNode.parentNode.innerHTML
+                        );
+                    });
+                    checksArray.forEach((element) => {
+                        table += element;
+                    });
+                    table += '</tbody>';
+                    // console.log(table);
+                    export_table_to_csv(table, 'selected', 'Table.csv');
+                } else {
+                    var html = document.getElementById('myTable').outerHTML;
+                    export_table_to_csv(html, 'full', 'table.csv');
+                }
+            });
+    </script>
 </html>
