@@ -42,7 +42,7 @@
                 {% for vendor in allocated %}
                 <tr id = "{{empid}}">
                     <td id = "{{vendor.vendor__id}}">{{vendor.vendor__name}}</td>
-                    <td><button id="delbtn" value="{{vendor.vendor__id}}" class="btn btn-danger">Remove Vendor</button></td>
+                    <td><button  value="{{vendor.vendor__id}}" class="delbtn btn btn-danger">Remove Vendor</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -148,7 +148,7 @@
             )
         
     })
-    $("#delbtn").click(function(){
+    $(".delbtn").click(function(){
        
         id = $(this).attr("value")
         $.ajax({
