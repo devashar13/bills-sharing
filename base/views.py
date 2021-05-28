@@ -31,61 +31,85 @@ def loginView(request):
     
 @login_required(login_url='/login/')
 def getVendors(request):
-    vendors = Vendor.objects.all()
-    return render(request, 'base/vendorsList.html', {'vendors': vendors})
+    userTypeList = list(request.user.type)
+    print(userTypeList)
+    if "supervisor" in userTypeList:
+        vendors = Vendor.objects.all()
+        return render(request, 'base/vendorsList.html', {'vendors': vendors})
+    else:
+        return redirect('addBill')   
 
 @login_required(login_url='/login/')
 def addVendor(request):
-    if request.method=="POST":
-        data=request.POST
-        vname=data.get("vname")
-        vemail = data.get("vmail")
-        v = Vendor(name=vname,email=vemail)
-        v.save()
     
-    return render(request,'base/vendorsList.html')
+    if request.method=="POST":
+        userTypeList = list(request.user.type)
+        print(userTypeList)
+        if "supervisor" in userTypeList:
+            data=request.POST
+            vname=data.get("vname")
+            vemail = data.get("vmail")
+            v = Vendor(name=vname,email=vemail)
+            v.save()
+        
+            return render(request,'base/vendorsList.html')
+        else:
+            return redirect('addBill')   
 
 @login_required(login_url='/login/')
 def vendorDetails(request,vendorid):
-    vendor = Vendor.objects.get(pk=vendorid)
-    expenseIds = vendor.expense_ids.all()
-    allExpenseIds = ExpenseID.objects.all()
-    return render(request,'base/vendorDetails.html',{'vendor':vendor,'expenseIds':expenseIds,'allExpenseIds':allExpenseIds})
+    userTypeList = list(request.user.type)
+    print(userTypeList)
+    if "supervisor" in userTypeList:
+        vendor = Vendor.objects.get(pk=vendorid)
+        expenseIds = vendor.expense_ids.all()
+        allExpenseIds = ExpenseID.objects.all()
+        return render(request,'base/vendorDetails.html',{'vendor':vendor,'expenseIds':expenseIds,'allExpenseIds':allExpenseIds})
+
 
 @login_required(login_url='/login/')
 def getExpenseIdsForVendor(request):
     if request.method=='POST':
-        data = request.POST
-        vname = data.get("vendor")
-        v = Vendor.objects.get(name=vname)
-        eids = v.expense_ids.all()
-        data = {}
-        for e in eids:
-            data[e.epattern] = e.eid
-        return JsonResponse(data)
+        userTypeList = list(request.user.type)
+        print(userTypeList)
+        if "supervisor" in userTypeList:
+            data = request.POST
+            vname = data.get("vendor")
+            v = Vendor.objects.get(name=vname)
+            eids = v.expense_ids.all()
+            data = {}
+            for e in eids:
+                data[e.epattern] = e.eid
+            return JsonResponse(data)
     
 @login_required(login_url='/login/')
 def createExpenseID(request):
     if request.method == "POST":
-        data = request.POST
-        eid = data.get("eid")
-        epattern = data.get("epattern")
-        expense = ExpenseID(
-            eid=eid,
-            epattern=epattern
-        )
-        expense.save()
-        return render(request,'base/ExpenseIdAdded.html')
-    return render(request,'base/createExpenseId.html')
+        userTypeList = list(request.user.type)
+        print(userTypeList)
+        if "supervisor" in userTypeList:
+            data = request.POST
+            eid = data.get("eid")
+            epattern = data.get("epattern")
+            expense = ExpenseID(
+                eid=eid,
+                epattern=epattern
+            )
+            expense.save()
+            return render(request,'base/ExpenseIdAdded.html')
+        return render(request,'base/createExpenseId.html')
     
 @login_required(login_url='/login/')    
 def addExpenseID(request):
     if request.method=="POST":
-        data=request.POST
-        selectedeid=data.get("selectedeid")
-        vendorid = data.get("vendorid")
-        vendor = Vendor.objects.get(pk=vendorid)
-        vendor.expense_ids.add(ExpenseID.objects.get(epattern=selectedeid))
+        userTypeList = list(request.user.type)
+        print(userTypeList)
+        if "supervisor" in userTypeList:
+            data=request.POST
+            selectedeid=data.get("selectedeid")
+            vendorid = data.get("vendorid")
+            vendor = Vendor.objects.get(pk=vendorid)
+            vendor.expense_ids.add(ExpenseID.objects.get(epattern=selectedeid))
     
     return render(request,'base/vendorDetails.html')
 
@@ -160,6 +184,16 @@ def viewBills(request):
         )
     return render(request,'base/viewbills.html',{"bills":bills})
 
+@login_required(login_url='/login/')
+def vendorBills(request,vendorid):
+    userTypeList = list(request.user.type)
+    print(userTypeList)
+    if "supervisor" in userTypeList:
+        vendor = Vendor.objects.get(pk=vendorid)
+        print(vendor)
+        bills  = Bill.objects.filter(vendor__id = vendorid)
+        print(bills)
+        return render(request,'base/viewbills.html',{'selectedvendor':vendor,'selectbills':bills})
 
 @login_required(login_url='/login/')    
 def sendImages(request):

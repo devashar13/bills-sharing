@@ -10,6 +10,7 @@
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
         crossorigin="anonymous"
     />
+    
     <script
         src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -25,7 +26,19 @@
         integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
         crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
     <title>Share Bills</title>
+    <style>
+      .dataTables_filter {
+        display: none !important;
+}
+    </style>
 </head>
   <body>
     <div class="container py-5">
@@ -53,6 +66,20 @@
           </tr>
         </thead>
         <tbody id="datarow">
+          {% if selectedvendor %}
+          {% for bill in selectbills %}
+          <tr>
+            <td class = "invoice" style="cursor: pointer;" >{{bill.invoice_num}}</td>
+            <td>{{bill.vendor__name}}</td>
+            <td>{{bill.expense_id}}</td>
+            <td>{{bill.amount}}</td>
+            <td class = "invdt">{{bill.invoice_date}}</td>
+            <td class="exfrom">{{bill.exp_from_date}}</td>
+            <td class="exto">{{bill.exp_to_date}}</td>
+            <td class="paid">{{bill.paid}}</td>
+          </tr>
+          {% endfor %}
+          {% else %}
           {% for bill in bills %}
           <tr>
             <td class = "invoice" style="cursor: pointer;" >{{bill.invoice_num}}</td>
@@ -65,6 +92,7 @@
             <td class="paid">{{bill.paid}}</td>
           </tr>
           {% endfor %}
+          {% endif %}
 
         </tbody>
         
@@ -92,6 +120,38 @@
   </body>
 
 <script>
+  $(document).ready(function() {
+    $('#myTable').DataTable( {
+        dom: 'Bfrtip',
+        "bPaginate": false,
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'asc' ]],
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5',
+            
+        ]
+    } );
+} );
+//   $(document).ready(function() {
+    
+//     $('#myTable').DataTable( {
+//         dom: 'Bfrtip',
+//         "bPaginate": false,
+        
+        
+//     } );
+// } );
   $('.invdt').each(function() {
     x = ($(this).html())
     inv_date = new Date(x)
@@ -169,9 +229,7 @@ document.querySelectorAll('input.filter').forEach(function(el,idx){
 });
 </script>
 <script>
-  $(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+
 $(".invoice").dblclick(function(){
   dataimg = $(this).html()
   console.log(dataimg)
@@ -186,7 +244,7 @@ $(".invoice").dblclick(function(){
                 success: function (response) {
                     console.log(dataimg)
                     console.log(response[dataimg]);
-                    html = `<img src = '${response[dataimg]}'/>`
+                    html = `<img id = "image" src = '${response[dataimg]}'/>`
                     $('.modal-content .modal-body').append(html) 
                     $('#myModal').modal('show');
                 },
@@ -198,183 +256,38 @@ $(".invoice").dblclick(function(){
 }); 
 </script>
 
-  <!-- <script>
-    
-    var bills = [
-     {% for bill in bills %}
-         {% if not forloop.first %},{% endif %}
-         {
-             vendor: "{{bill.vendor__name}}",
-             inv_no:"{{bill.invoice_num}}",
-             invoice_date:"{{bill.invoice_date}}",
-             expense_id:"{{bill.expense_id}}",
-             exp_from_date:"{{bill.exp_from_date}}",
-             exp_to_date:"{{bill.exp_to_date}}",
-             quantity:"{{bill.quantity}}",
-             rate:"{{bill.rate}}",
-             amount:"{{bill.amount}}",
-             gst:"{{bill.gst}}",
-             other:"{{bill.other}}",
-             total_amount:"{{bill.total_amount}}",
-             due_payment:"{{bill.due_payment}}",
-             paid:"{{bill.paid}}",
-           }
-     {% endfor %}
-     ]
-       for(i = 0;i<bills.length;i++){
-
-       $(`#datarow`).append(`
-       <tr>
-         <td>${bills[i].inv_no}</td>
-         <td>${bills[i].vendor}</td>
-         <td>${bills[i].expense_id}</td>
-         <td>${bills[i].amount}</td>
-         <td>${bills[i].invoice_date}</td>
-         <td>${bills[i].exp_from_date}</td>
-         <td>${bills[i].exp_to_date}</td>
-        
-       </tr>`)
-     }
-     let unpaid = false;
-     $("#unpaid").click(function(){
-       unpaid = true
-       $("#datarow").html("")
-       for(i = 0;i<bills.length;i++){
-       if(bills[i].paid == "False"){
-       $(`#datarow`).append(`
-       <tr>
-         <td>${bills[i].inv_no}</td>
-         <td>${bills[i].vendor}</td>
-         <td>${bills[i].expense_id}</td>
-         <td>${bills[i].amount}</td>
-       </tr>`)
-       }
-     }
-     
-
-     })
-     $("#all").click(function(){
-       $("#datarow").html("")
-       for(i = 0;i<bills.length;i++){
-       $(`#datarow`).append(`
-       <tr>
-         <td>${bills[i].inv_no}</td>
-         <td>${bills[i].vendor}</td>
-         <td>${bills[i].expense_id}</td>
-         <td>${bills[i].amount}</td>
-       </tr>`)
-     }
-
-     })
-     $("#bill-dt").datepicker({
-         dateFormat: 'yy-mm-dd',
-         changeMonth: true,
-         numberOfMonths: 1,
-         onClose: function (selectedDate) {
-           $("#datarow").html("")
-       for(i = 0;i<bills.length;i++){
-
-        inv_date = new Date(bills[i].invoice_date)
-        var day = inv_date.getDate();
-        var month = inv_date.getMonth() + 1
-        var year = inv_date.getFullYear();
-        
-      if (String(month).length < 2){
-        month = '0' + month;
+   
+<!-- <script type="text/javascript">
+  function exportToExcel(tableID, filename = ''){
+      var downloadurl;
+      var dataFileType = 'application/vnd.ms-excel';
+      var tableSelect = document.getElementById("myTable");
+      var tableHTMLData = tableSelect.outerHTML.replace(/ /g, '%20');
+      
+      // Specify file name
+      filename = filename?filename+'.xls':'export_excel_data.xls';
+      
+      // Create download link element
+      downloadurl = document.createElement("a");
+      
+      document.body.appendChild(downloadurl);
+      
+      if(navigator.msSaveOrOpenBlob){
+          var blob = new Blob(['\ufeff', tableHTMLData], {
+              type: dataFileType
+          });
+          navigator.msSaveOrOpenBlob( blob, filename);
+      }else{
+          // Create a link to the file
+          downloadurl.href = 'data:' + dataFileType + ', ' + tableHTMLData;
+      
+          // Setting the file name
+          downloadurl.download = filename;
+          
+          //triggering the function
+          downloadurl.click();
       }
-    if (String(day).length < 2){
-      day = '0' + day;
-    }
-        var today = year+'-'+month+'-'+day;
-         if(String(today) == selectedDate){
-           $(`#datarow`).append(`
-       <tr>
-         <td>${bills[i].inv_no}</td>
-         <td>${bills[i].vendor}</td>
-         <td>${bills[i].expense_id}</td>
-         <td>${bills[i].amount}</td>
-       </tr>`)
-         }
-
-     }
-         }
-     });
-     $("#ex-from-date").datepicker({
-       
-        dateFormat: 'yy-mm-dd',
-        changeMonth: true,
-        numberOfMonths: 1,
-        onClose: function (selectedDate) {
-          $("#datarow").html("")
-            $("#ex-to-date").datepicker("option", "minDate", selectedDate);
-            for(i = 0;i<bills.length;i++){
-
-                inv_date = new Date(bills[i].exp_to_date)
-                var day = inv_date.getDate();
-                var month = inv_date.getMonth() + 1
-                var year = inv_date.getFullYear();
-
-                if (String(month).length < 2){
-                month = '0' + month;
-                }
-                if (String(day).length < 2){
-                day = '0' + day;
-                }
-                var today = year+'-'+month+'-'+day;
-                if(String(today) == selectedDate){
-                  $(`#datarow`).append(`
-                <tr>
-                <td>${bills[i].inv_no}</td>
-                <td>${bills[i].vendor}</td>
-                <td>${bills[i].expense_id}</td>
-                <td>${bills[i].amount}</td>
-                </tr>`)
-                }
-
-          }
-        }
-    });
-    $("#ex-to-date").datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeMonth: true,
-        numberOfMonths: 1,
-        onClose: function (selectedDate) {
-          $("#datarow").html("")
-
-            $("#ex-from-date").datepicker("option", "maxDate", selectedDate);
-            for(i = 0;i<bills.length;i++){
-
-              inv_date = new Date(bills[i].exp_from_date)
-              to_date = new Date(bills[i].exp_to_date)
-              var day = inv_date.getDate();
-              var month = inv_date.getMonth() + 1
-              var year = inv_date.getFullYear();
-              var today = to_date.getDate();
-              var tomonth = to_date.getMonth() + 1
-              var toyear = to_date.getFullYear();
-
-              if (String(tomonth).length < 2){
-              month = '0' + month;
-              }
-              if (String(today).length < 2){
-              day = '0' + day;
-              }
-              var today = year+'-'+month+'-'+day;
-              var to = toyear+'-'+tomonth+'-'+today;
-              console.log(String(today),$("#ex-from-date").val())
-              console.log(String(to),selectedDate)
-              if(String(today) == $("#ex-from-date").val() && String(to) === selectedDate){
-                $(`#datarow`).append(`
-              <tr>
-              <td>${bills[i].inv_no}</td>
-              <td>${bills[i].vendor}</td>
-              <td>${bills[i].expense_id}</td>
-              <td>${bills[i].amount}</td>
-              </tr>`)
-              }
-
-}
-        }
-    }); -->
-  </script>
+  }
+   
+  </script> -->
 </html>
