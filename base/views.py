@@ -125,10 +125,16 @@ def addBill(request):
     
     # vendors = Vendor.objects.all().values('name','expense_ids__eid')
     # vendorNames = Vendor.objects.all().values('name').distinct()
-    vendorNames = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name').distinct()
-    vendors = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name','vendor__expense_ids__eid')
-    print(vendors)
-    return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+    if "supervisor" in userTypeList:
+        userTypeList = list(request.user.type)
+        vendors = Vendor.objects.all().values('name','expense_ids__eid')
+        vendorNames = Vendor.objects.all().values('name').distinct()
+        return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+    else:
+        vendorNames = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name').distinct()
+        vendors = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name','vendor__expense_ids__eid')
+        print(vendors)
+        return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
 
         
     
