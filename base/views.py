@@ -35,7 +35,8 @@ def loginView(request):
 
 @login_required(login_url='/login/')
 def homeView(request):
-    return render(request,"base/home.html")
+    userTypeList = list(request.user.type)
+    return render(request,"base/home.html",{'userType':userTypeList})
     
 @login_required(login_url='/login/')
 def getVendors(request):
@@ -154,8 +155,8 @@ def addBillVendor(request,vendorid):
 def selectEmployee(request):
     supervisor = request.user
     emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
-    
-    return render(request,'base/selectemps.html',{'emps':emps})
+    userTypeList = list(request.user.type)
+    return render(request,'base/selectemps.html',{'emps':emps,"userType":userTypeList})
 
 def employeeVendor(request,empid):
     # supervisor = request.user
