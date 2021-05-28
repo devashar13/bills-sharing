@@ -165,6 +165,9 @@
                         type="date"
                     />
                 </div>
+                <div class="d-inline-block ml-2">
+                  <button class="btn btn-warning" style="color: black;" onclick="performReset()">CLEAR DATE FILTERS</button>
+                </div>
 
                 <div class="d-inline-block">
                     <div class="d-inline-block ml-3">
@@ -390,7 +393,7 @@
                 var firstCol = rows[i].cells[8].textContent.toUpperCase();
                 var secondCol = rows[i].cells[9].textContent.toUpperCase();
                 var thirdCol = rows[i].cells[10].textContent.toUpperCase();
-                console.log(firstCol,secondCol,thirdCol)
+                // console.log(firstCol,secondCol,thirdCol)
                 if (
                     (firstCol.indexOf(filter) > -1 && index == 0) ||
                     (secondCol.indexOf(filter) > -1 && index == 1) ||
@@ -398,6 +401,7 @@
                 ) {
                     rows[i].style.display = '';
                 } else {
+                  rows[i].children[0].querySelector("input").checked=false
                     rows[i].style.display = 'none';
                 }
             }
