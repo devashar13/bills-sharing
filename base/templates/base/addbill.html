@@ -9,17 +9,32 @@
 			<select name="vendors-name" id="vendors-names">
                 {% if selectedvendor %}
                     {% for vendor in vendorNames %}
+                    {% if 'supervisor' in userType %}
+                        {% if vendor.name == selectedvendor.name %}
+                            <option value="{{vendor.name}}" selected>{{vendor.name}}</option>
+                        {% else %}
+                            <option value="{{vendor.name}}">{{vendor.name}}</option>
+                        {% endif %}
+
+                    {% else %}
                         {% if vendor.vendor__name == selectedvendor.name %}
                             <option value="{{vendor.vendor__name}}" selected>{{vendor.vendor__name}}</option>
                         {% else %}
                             <option value="{{vendor.vendor__name}}">{{vendor.vendor__name}}</option>
                         {% endif %}
+                        {% endif %}
                     {% endfor %}
+                {% else %}
+                {% if 'supervisor' in userType %}
+                {% for vendor in vendorNames %}
+                <option value="{{vendor.name}}">{{vendor.name}}</option>
+                {% endfor %}
                 {% else %}
                     <option selected>Select Vendor Name</option>
                     {% for vendor in vendorNames %}
                         <option value="{{vendor.vendor__name}}">{{vendor.vendor__name}}</option>
                     {% endfor %}
+                {% endif %}
                 {% endif %}
             </select>
 		</div>
