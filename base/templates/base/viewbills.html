@@ -192,7 +192,9 @@
                                 id="{{ bill.invoice_num }}"
                             />
                         </td>
-                        <td class="invoice" style="cursor: pointer">{{bill.invoice_num}}</td>
+                        <td class="invoice" style="cursor: pointer">
+                            {{bill.invoice_num}}
+                        </td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
                         <td>{{bill.amount}}</td>
@@ -486,31 +488,59 @@
             downloadLink.click();
         }
 
-        function export_table_to_csv(html, filename) {
-            const data = document.createElement('table')
-            data.innerHTML = html
-            var csv = [];
-            console.log(data)
-            var rows = data.querySelectorAll('tr');
+        function export_table_to_csv(html, type, filename) {
+            if (type === 'selected') {
+                // const data = document.createElement('table');
+                // data.innerHTML = html;
+                var csv = [];
+                // console.log(data);
+                // var rows = data.querySelectorAll('tr');
+                var rows=[]
+                var intialRows = document.querySelectorAll('table thead tr, table tbody tr');
+                intialRows.forEach((row,i) => {
+                  if(i!==0) {
+                    if(row.querySelector('td input').checked){
+                      rows.push(row)
+                    }
+                  } else {
+                    rows.push(row)
+                  }
+                })
 
-            for (var i = 0; i < rows.length; i++) {
-                var row = [],
-                    cols = rows[i].querySelectorAll('td, th');
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [],
+                        cols = rows[i].querySelectorAll('td, th');
 
-                for (var j = 0; j < cols.length; j++)
-                    row.push(cols[j].innerText);
+                    for (var j = 1; j < cols.length; j++)
+                        row.push(cols[j].innerText);
 
-                csv.push(row.join(','));
+                    csv.push(row.join(','));
+                }
+
+                // Download CSV
+                download_csv(csv.join('\n'), filename);
+            } else {
+                var csv = [];
+                var rows = document.querySelectorAll('table thead tr, table tbody tr');
+
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [],
+                        cols = rows[i].querySelectorAll('td, th');
+
+                    for (var j = 1; j < cols.length; j++)
+                        row.push(cols[j].innerText);
+
+                    csv.push(row.join(','));
+                }
+
+                // Download CSV
+                download_csv(csv.join('\n'), filename);
             }
-
-            // Download CSV
-            download_csv(csv.join('\n'), filename);
         }
 
         document
             .getElementById('download-csv')
             .addEventListener('click', function () {
-                var html = document.getElementById('myTable').outerHTML;
                 table = `
                     <thead class="thead-dark">
                       <tr>
@@ -531,15 +561,22 @@
                 var checkboxes = document.querySelectorAll(
                     'input[name=select-rows]:checked'
                 );
-                checkboxes.forEach(checkbox => {
-                  checksArray.push(checkbox.parentNode.parentNode.parentNode.innerHTML)
-                })
-                checksArray.forEach(element => {
-                  table+=element
-                })
-                table += '</tbody>';
-                console.log(table);
-                export_table_to_csv(table, 'Table.csv');
+                if (checkboxes.length > 0) {
+                    checkboxes.forEach((checkbox) => {
+                        checksArray.push(
+                            checkbox.parentNode.parentNode.parentNode.innerHTML
+                        );
+                    });
+                    checksArray.forEach((element) => {
+                        table += element;
+                    });
+                    table += '</tbody>';
+                    // console.log(table);
+                    export_table_to_csv(table, 'selected', 'Table.csv');
+                } else {
+                    var html = document.getElementById('myTable').outerHTML;
+                    export_table_to_csv(html, 'full', 'table.csv');
+                }
             });
     </script>
 </html>
