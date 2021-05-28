@@ -22,7 +22,7 @@ def loginView(request):
                 login(request,user)
                 userTypeList = list(user.type)
                 if "supervisor" in userTypeList:
-                    return redirect('getVendors')
+                    return redirect('home')
                 else:
                     return redirect('addBill')
                 
