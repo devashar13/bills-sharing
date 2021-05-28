@@ -20,7 +20,11 @@ def loginView(request):
             print(user)
             if user is not None:
                 login(request,user)
-                return redirect('getVendors')
+                userTypeList = list(user.type)
+                if "supervisor" in userTypeList:
+                    return redirect('getVendors')
+                else:
+                    return redirect('addBill')
                 
             else:
                 return render(request,'base/login.html',{"data":"wrong"})
@@ -35,7 +39,7 @@ def getVendors(request):
     print(userTypeList)
     if "supervisor" in userTypeList:
         vendors = Vendor.objects.all()
-        return render(request, 'base/vendorsList.html', {'vendors': vendors})
+        return render(request, 'base/vendorsList.html', {'vendors': vendors,'userType':userTypeList})
     else:
         return redirect('addBill')   
 
@@ -83,10 +87,11 @@ def getExpenseIdsForVendor(request):
             return JsonResponse(data)
     
 @login_required(login_url='/login/')
+
 def createExpenseID(request):
+    userTypeList = list(request.user.type)
+    print(userTypeList)
     if request.method == "POST":
-        userTypeList = list(request.user.type)
-        print(userTypeList)
         if "supervisor" in userTypeList:
             data = request.POST
             eid = data.get("eid")
@@ -96,8 +101,8 @@ def createExpenseID(request):
                 epattern=epattern
             )
             expense.save()
-            return render(request,'base/ExpenseIdAdded.html')
-        return render(request,'base/createExpenseId.html')
+            return render(request,'base/ExpenseIdAdded.html',{'userType':userTypeList})
+    return render(request,'base/createExpenseId.html',{'userType':userTypeList})
     
 @login_required(login_url='/login/')    
 def addExpenseID(request):
@@ -116,16 +121,22 @@ def addExpenseID(request):
 
 @login_required(login_url='/login/')
 def addBill(request):
+    userTypeList = list(request.user.type)
     vendors = Vendor.objects.all().values('name','expense_ids__eid')
     vendorNames = Vendor.objects.all().values('name').distinct()
-    return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames})
+    print(userTypeList)
+    return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+
+        
+    
 
 @login_required(login_url='/login/')
 def addBillVendor(request,vendorid):
+    userTypeList = list(request.user.type)
     vendor = Vendor.objects.get(pk=vendorid)
     vendors = Vendor.objects.all().values('name','expense_ids__eid')
     vendorNames = Vendor.objects.all().values('name').distinct()
-    return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames})
+    return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
 
 @login_required(login_url='/login/')
 def saveBill(request):
@@ -176,13 +187,14 @@ def saveBill(request):
         print(e)
 
 def viewBills(request):
+    userTypeList = list(request.user.type)
     bills = Bill.objects.values(
         "vendor__name",'invoice_num','invoice_date',
         'expense_id','exp_from_date','exp_to_date',
         'quantity','rate','amount','gst','other',
         'total_amount','due_payment','paid'
         )
-    return render(request,'base/viewbills.html',{"bills":bills})
+    return render(request,'base/viewbills.html',{"bills":bills,"userType":userTypeList})
 
 @login_required(login_url='/login/')
 def vendorBills(request,vendorid):
@@ -193,7 +205,7 @@ def vendorBills(request,vendorid):
         print(vendor)
         bills  = Bill.objects.filter(vendor__id = vendorid)
         print(bills)
-        return render(request,'base/viewbills.html',{'selectedvendor':vendor,'selectbills':bills})
+        return render(request,'base/viewbills.html',{'selectedvendor':vendor,'selectbills':bills,"userType":userTypeList})
 
 @login_required(login_url='/login/')    
 def sendImages(request):

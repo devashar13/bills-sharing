@@ -26,7 +26,7 @@
         <table class="table table-striped" id="tbl">
             <thead>
                 <tr>
-                    <th class="text-center">Vendors List</th>
+                    <th>Vendors List</th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -35,7 +35,7 @@
             <tbody id="tblbody">
                 {% for vendor in vendors %}
                 <tr id="{{vendor.id}}">
-                    <td class="vendor-name text-center">{{vendor.name}}</td>
+                    <td class="vendor-name ">{{vendor.name}}</td>
                     <td>
                         <a href="{% url 'vendorDetails' vendorid=vendor.id %}"
                             ><button class="btn btn-primary">
