@@ -159,7 +159,7 @@ def employeeVendor(request,empid):
     # emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
     x = []
     y = []
-    allocated = EmployeeAdditional.objects.filter(id = empid).values('vendor__name').distinct()
+    allocated = EmployeeAdditional.objects.filter(id = empid).values('vendor__name','vendor__id').distinct()
     vendorNames = Vendor.objects.all().values('name').distinct()
     for i in range(len(allocated)):
         x.append(allocated[i]['vendor__name'])
@@ -187,6 +187,16 @@ def saveEmployeeVendors(request):
     # new_vendors = data.get("vends")
     # emp = data.get('empid')
     # print(new_vendors,emp)
+    return JsonResponse({"hi":"OK"})
+
+def deleteEmployeeVendors(request):
+    data=request.POST
+    vendor = data.get("vendor")
+    print(vendor)
+    empid = data.get("empid")
+    more = Vendor.objects.filter(id = vendor)
+    addnew = EmployeeAdditional.objects.get(id = empid)
+    addnew.vendor.remove(vendor)
     return JsonResponse({"hi":"OK"})
     
     

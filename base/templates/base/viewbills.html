@@ -72,42 +72,63 @@
         </style>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Bills</a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <nav
+            class="
+                navbar navbar-expand-lg navbar-light
+                bg-light
+                justify-content-between
+            "
+        >
+            <div class="form-inline">
+                <a class="navbar-brand" href="#">Bills</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
+                <div
+                    class="collapse navbar-collapse"
+                    id="navbarSupportedContent"
+                >
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"
+                                >Home <span class="sr-only">(current)</span></a
+                            >
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{%url 'addBill'%}"
-                            >Add Bill</a
-                        >
-                    </li>
-                    {% if 'supervisor' in userType %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{%url 'getVendors'%}"
-                            >Dashboard</a
-                        >
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{%url 'logout'%}">Logout</a>
-                    </li>
-                </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{%url 'viewBills'%}"
+                                >View All Bills</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{%url 'addBill'%}"
+                                >Add Bill</a
+                            >
+                        </li>
+                        {% if 'supervisor' in userType %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{%url 'getVendors'%}"
+                                >Dashboard</a
+                            >
+                        </li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+            </div>
+            <div class="form-inline">
+                <a href="{%url 'logout'%}"
+                    ><button class="btn btn-outline-danger">LOGOUT</button></a
+                >
             </div>
         </nav>
         <div class="container py-5">
@@ -139,6 +160,9 @@
                         id="search3"
                         type="date"
                     />
+                </div>
+                <div class="d-inline-block ml-2">
+                  <button class="btn btn-warning" style="color: black;" onclick="performReset()">CLEAR DATE FILTERS</button>
                 </div>
 
                 <div class="d-inline-block">
@@ -177,9 +201,9 @@
                 </button>
             </div>
             <table
-                id="myTable"
-                class="table w-100 table-hover table-responsive table-striped"
-                style="border-bottom: 0cm !important"
+            id="myTable"
+            class="table table-responsive table-hover table-striped"
+            style="border-bottom: 0cm !important;;"
             >
                 <thead class="thead-dark" id="tblHead">
                     <tr>
@@ -362,9 +386,10 @@
             var filter = event.target.value.toUpperCase();
             var rows = document.querySelector('#mytable tbody').rows;
             for (var i = 0; i < rows.length; i++) {
-                var firstCol = rows[i].cells[4].textContent.toUpperCase();
-                var secondCol = rows[i].cells[5].textContent.toUpperCase();
-                var thirdCol = rows[i].cells[6].textContent.toUpperCase();
+                var firstCol = rows[i].cells[8].textContent.toUpperCase();
+                var secondCol = rows[i].cells[9].textContent.toUpperCase();
+                var thirdCol = rows[i].cells[10].textContent.toUpperCase();
+                // console.log(firstCol,secondCol,thirdCol)
                 if (
                     (firstCol.indexOf(filter) > -1 && index == 0) ||
                     (secondCol.indexOf(filter) > -1 && index == 1) ||
@@ -372,6 +397,7 @@
                 ) {
                     rows[i].style.display = '';
                 } else {
+                  rows[i].children[0].querySelector("input").checked=false
                     rows[i].style.display = 'none';
                 }
             }
@@ -460,7 +486,8 @@
             for (var i = 0; i < rows.length; i++) {
                 var display = ''; // Default to display
                 // If it is not found in the selected filter values, don't show it
-                if (show.indexOf(rows[i].children[8].textContent) === -1) {
+                if (show.indexOf(rows[i].children[11].textContent) === -1) {
+                    rows[i].children[0].querySelector('input').checked = false;
                     display = 'none';
                 }
                 // Update the display accordingly

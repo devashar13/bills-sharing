@@ -37,6 +37,8 @@ urlpatterns = [
     path("viewBills/<int:vendorid>",vendorBills,name = "vendorBills"),
     path("sendImages/",sendImages,name = "sendImages"),
     path("saveEmployeeVendors/",saveEmployeeVendors,name = "saveEmployeeVendors"),
+    path("deleteEmployeeVendors/",deleteEmployeeVendors,name = "deleteEmployeeVendors"),
+    
     
     
     

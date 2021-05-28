@@ -40,9 +40,9 @@
             </thead>
             <tbody id="tblbody">
                 {% for vendor in allocated %}
-                <tr on id = {{emp.id}}>
-                    <td>{{vendor.vendor__name}}</td>
-                    <td><button class="btn btn-danger">Remove Vendor</button></td>
+                <tr id = "{{empid}}">
+                    <td id = "{{vendor.vendor__id}}">{{vendor.vendor__name}}</td>
+                    <td><button id="delbtn" value="{{vendor.vendor__id}}" class="btn btn-danger">Remove Vendor</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -148,6 +148,26 @@
             )
         
     })
+    $("#delbtn").click(function(){
+       
+        id = $(this).attr("value")
+        $.ajax({
+                'headers': { "X-CSRFToken": '{{csrf_token}}' },
+                'type': 'POST',
+                'url': '/deleteEmployeeVendors/',
+                'dataType': 'json',
+                'data': {
+                    'vendor': id,
+                    'empid': "{{empid}}",
+                },
+                'success': function(response) {
+                    location.reload()
+                }
+            }   
+    )
+
+    })
 </script>  
+
 
 {% endblock %}
