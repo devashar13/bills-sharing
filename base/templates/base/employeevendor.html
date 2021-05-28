@@ -42,6 +42,7 @@
                 {% for vendor in allocated %}
                 <tr on id = {{emp.id}}>
                     <td>{{vendor.vendor__name}}</td>
+                    <td><button class="btn btn-danger">Remove Vendor</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
