@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse, request
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Employee, EmployeeAdditional, Vendor, ExpenseID, Bill, BillImage
+from .models import Employee, EmployeeAdditional, Supervisor, Vendor, ExpenseID, Bill, BillImage
 from decimal import Decimal
 from django.http import JsonResponse
 
@@ -140,6 +140,51 @@ def addBillVendor(request,vendorid):
     vendors = Vendor.objects.all().values('name','expense_ids__eid')
     vendorNames = Vendor.objects.all().values('name').distinct()
     return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+
+def selectEmployee(request):
+    supervisor = request.user
+    emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
+    
+    return render(request,'base/selectemps.html',{'emps':emps})
+
+def employeeVendor(request,empid):
+    # supervisor = request.user
+    # print(emp)
+    # emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
+    x = []
+    y = []
+    allocated = EmployeeAdditional.objects.filter(id = empid).values('vendor__name').distinct()
+    vendorNames = Vendor.objects.all().values('name').distinct()
+    for i in range(len(allocated)):
+        x.append(allocated[i]['vendor__name'])
+    for m in range(len(vendorNames)):
+        y.append(vendorNames[m]['name'])
+    not_allocated = list(set(x).symmetric_difference(set(y)))
+    vendorName = Vendor.objects.filter(name__in = not_allocated).values('id','name')
+    
+    # print(vendorNames)
+    return render(request,'base/employeevendor.html',{'allocated':allocated,'vendornames':vendorName,"empid":empid})
+
+def saveEmployeeVendors(request):
+    data=request.POST
+    new_vendids = data.getlist("vends[]")
+    empid = data.get("empid")
+    print(new_vendids)
+    # allocated = list(allocated)
+    more = Vendor.objects.filter(id__in = new_vendids)
+    addnew = EmployeeAdditional.objects.get(id = empid)
+    print(addnew)
+    addnew.vendor.add(*more)
+        # for i in range(len(allocated)):
+    #     new_vendids.append(allocated[i]['vendor__id'])
+    # print(new_vendids)
+    # new_vendors = data.get("vends")
+    # emp = data.get('empid')
+    # print(new_vendors,emp)
+    return JsonResponse({"hi":"OK"})
+    
+    
+    
 
 @login_required(login_url='/login/')
 def saveBill(request):

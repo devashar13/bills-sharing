@@ -107,8 +107,10 @@ class Vendor(models.Model):
         return self.name
 class EmployeeAdditional(models.Model):
     user = OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="emp")
-    supervisor = ForeignKey(Supervisor,on_delete=models.CASCADE,related_name="empsupervisor")
+    supervisor = ForeignKey(Supervisor,on_delete=models.CASCADE,related_name="empsupervisor",null=True,blank=True)
     vendor  = ManyToManyField(Vendor,null=True,blank=True)
+    def __str__(self):
+        return self.user.email
 
 
 

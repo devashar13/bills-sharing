@@ -1,0 +1,152 @@
+{% extends 'base/base.html' %} {% block 'card-content' %}
+<style>
+    .modal-backdrop {
+    z-index: -1 !important;
+}
+.modal-content {
+    margin: 2px auto;
+    z-index: 1100 !important;
+}
+</style>
+<div class="custom-card vendors-list-card">
+    <h1 class="form-heading">Allocated Vendors</h1>
+    <div style="overflow-y: scroll; overflow-x: none">
+        <div class="add-vendor d-flex justify-content-end">
+            <button
+                class="btn btn-success mb-3"
+                data-toggle="modal"
+                data-target="#addVendorModal"
+            >
+                ASSIGN VENDOR
+            </button>
+        </div>
+      
+        <div>
+            <div class="custom-form-group">
+                <input
+                    type="text"
+                    id="filterByName"
+                    onkeyup="filterFunction()"
+                    required
+                />
+                <span>Filter by Name</span>
+            </div>
+        </div>
+        <table class="table table-striped" id="tbl">
+            <thead>
+                <tr>
+                    <th>Allocated Vendors</th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                {% for vendor in allocated %}
+                <tr on id = {{emp.id}}>
+                    <td>{{vendor.vendor__name}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+    </div>
+</div>
+<div
+    class="modal fade"
+    id="addVendorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="addVendorModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="custom-card login-form-card">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        ASSIGN VENDOR
+                    </h5>
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+  
+
+                        
+                        {% csrf_token %}
+                        <div style="display: flex; flex-direction: column; overflow-y: scroll;">
+                            <div>
+                                <button id="select"  class="btn btn-primary">Select All</button>
+                                <button id="deselect" class="btn btn-danger">Deselect All</button>
+                            </div>
+                        
+                        {% for vendor in vendornames %}
+                        <label for="one">
+                            <input class = "vends" type="checkbox" id="{{vendor.id}}" />{{vendor.name}}
+                        </label>
+                        {% endfor%}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                    >
+                        Close
+                    </button>
+                    <a href=""
+                        ><button class="btn btn-success" id="addVendorButton">
+                            &plus; ADD VENDOR
+                        </button></a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">  
+    $("#select").on("click",function(event){
+        event.preventDefault()
+        $('.vends').each(function(){
+            this.checked = true;
+        }) 
+    })
+    $("#deselect").on("click",function(event){
+        event.preventDefault()
+        $('.vends').each(function(){
+            this.checked = false  ;
+        }) 
+    })       
+    $("#addVendorButton").on("click",function(){
+        event.preventDefault()
+        let vends = []
+        $('.vends').each(function(){
+            if(this.checked === true){
+                console.log(this.id)
+                vends.push(this.id) 
+            }
+            
+        }) 
+        console.log(vends)
+        $.ajax({
+                'headers': { "X-CSRFToken": '{{csrf_token}}' },
+                'type': 'POST',
+                'url': '/saveEmployeeVendors/',
+                'dataType': 'json',
+                'data': {
+                    'vends': vends,
+                    'empid': "{{empid}}",
+                },
+                'success': function(response) {
+                    location.reload()
+                }
+            }   
+            )
+        
+    })
+</script>  
+
+{% endblock %}

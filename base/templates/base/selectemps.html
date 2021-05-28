@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %} {% block 'card-content' %}
+<div class="custom-card vendors-list-card">
+    <h1 class="form-heading">Employee List</h1>
+    <div style="overflow-y: scroll; overflow-x: none">
+        <!-- <div class="add-vendor d-flex justify-content-end">
+            <button
+                class="btn btn-success mb-3"
+                data-toggle="modal"
+                data-target="#addVendorModal"
+            >
+                SELECT EMPLOYEE
+            </button>
+        </div> -->
+      
+        <div>
+            <div class="custom-form-group">
+                <input
+                    type="text"
+                    id="filterByName"
+                    onkeyup="filterFunction()"
+                    required
+                />
+                <span>Filter by Name</span>
+            </div>
+        </div>
+        <table class="table table-striped" id="tbl">
+            <thead>
+                <tr>
+                    <th>Employee List</th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                {% for emp in emps %}
+                <tr on id = {{emp.id}}>
+                    <td>{{emp}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+    </div>
+</div>
+<script>
+$(document).ready(function () {      
+     $('#tblbody tr').click(function (event) {
+          x = $(this).attr('id')
+          console.log(x)
+          location.assign(`/selectEmployee/${x}`)      
+
+     });
+ });
+</script>
+{% endblock %}
