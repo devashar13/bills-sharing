@@ -143,6 +143,11 @@ input[type='file']::file-selector-button {
     max-width: 900px;
 }
 
+.view-bills-card {
+    width: 100%;
+    max-width: 1000px;
+}
+
 .vendor-name {
     min-width: 200px;
 }
