@@ -22,7 +22,7 @@ def loginView(request):
                 login(request,user)
                 userTypeList = list(user.type)
                 if "supervisor" in userTypeList:
-                    return redirect('getVendors')
+                    return redirect('home')
                 else:
                     return redirect('addBill')
                 
@@ -32,6 +32,11 @@ def loginView(request):
             print(e)
     else:
         return render(request,'base/login.html',{})
+
+@login_required(login_url='/login/')
+def homeView(request):
+    userTypeList = list(request.user.type)
+    return render(request,"base/home.html",{'userType':userTypeList})
     
 @login_required(login_url='/login/')
 def getVendors(request):
@@ -150,8 +155,8 @@ def addBillVendor(request,vendorid):
 def selectEmployee(request):
     supervisor = request.user
     emps = EmployeeAdditional.objects.filter(supervisor__email = supervisor)
-    
-    return render(request,'base/selectemps.html',{'emps':emps})
+    userTypeList = list(request.user.type)
+    return render(request,'base/selectemps.html',{'emps':emps,"userType":userTypeList})
 
 def employeeVendor(request,empid):
     # supervisor = request.user
