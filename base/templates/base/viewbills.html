@@ -40,6 +40,8 @@
         <script src="{% static 'js/tableHTMLExport.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.10/jspdf.plugin.autotable.min.js"></script>
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+
         <title>Share Bills</title>
         <style>
             .dataTables_filter {
@@ -109,54 +111,74 @@
             </div>
         </nav>
         <div class="container py-5">
-            <!-- <label for="bill-dt">
-                <input class="filter" name="bill-dt" id="search1" type="date" />
-            </label>
-            <label for="ex-from-date">
-                <input
-                    class="filter"
-                    name="ex-from-date"
-                    id="search2"
-                    type="date"
-                />
-            </label>
-            <label for="ex-to-date">
-                <input
-                    class="filter"
-                    name="ex-to-date"
-                    id="search3"
-                    type="date"
-                />
-            </label> -->
+            <div class="mb-3">
+                <div class="d-inline-block">
+                    <label for="bill-dt">Invoive Date: </label>
+                    <input
+                        class="filter"
+                        name="bill-dt"
+                        id="search1"
+                        type="date"
+                    />
+                </div>
+                <div class="d-inline-block">
+                    <label for="ex-from-date">Expense Fom: </label>
 
-            <input
-                name="tablefilter"
-                type="checkbox"
-                value="Paid"
-                id="tablefilter1"
-                checked
-            />
-            <label for="tablefilter1">Paid</label>
-            <input
-                name="tablefilter"
-                type="checkbox"
-                value="Unpaid"
-                id="tablefilter2"
-                checked
-            />
-            <label for="tablefilter2">Unpaid</label>
-            <div>
-                <button class="btn btn-success" id="download-csv">CSV</button>
+                    <input
+                        class="filter"
+                        name="ex-from-date"
+                        id="search2"
+                        type="date"
+                    />
+                </div>
+                <div class="d-inline-block">
+                    <label for="ex-to-date">Expense To: </label>
+                    <input
+                        class="filter"
+                        name="ex-to-date"
+                        id="search3"
+                        type="date"
+                    />
+                </div>
+
+                <div class="d-inline-block">
+                    <div class="d-inline-block ml-3">
+                        <input
+                            name="tablefilter"
+                            type="checkbox"
+                            value="Paid"
+                            id="tablefilter1"
+                            checked
+                        />
+                        <label for="tablefilter1">Paid</label>
+                    </div>
+                    <div class="d-inline-block ml-3">
+                        <input
+                            name="tablefilter"
+                            type="checkbox"
+                            value="Unpaid"
+                            id="tablefilter2"
+                            checked
+                        />
+                        <label for="tablefilter2">Unpaid</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-success" id="download-csv">
+                    &#8595; CSV
+                </button>
                 <button class="btn btn-success" id="download-excel">
-                    EXCEL
+                    &#8595; EXCEL
                 </button>
                 <button class="btn btn-success" id="download-pdf">
-                  PDF
-              </button>
+                    &#8595; PDF
+                </button>
             </div>
             <table
                 id="myTable"
-                class="table table-responsive table-hover table-striped"
+                class="table w-100 table-hover table-responsive table-striped"
                 style="border-bottom: 0cm !important"
             >
                 <thead class="thead-dark" id="tblHead">
@@ -165,6 +187,9 @@
                         <th>Bill No</th>
                         <th>Vendor</th>
                         <th>Exp Id</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>GST</th>
                         <th>Bill Amt</th>
                         <th>Invoice Date</th>
                         <th>Expense From</th>
@@ -187,6 +212,9 @@
                         </td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
+                        <td>{{bill.quantity}}</td>
+                        <td>{{bill.rate}}</td>
+                        <td>{{bill.gst}}</td>
                         <td>{{bill.amount}}</td>
                         <td class="invdt">{{bill.invoice_date}}</td>
                         <td class="exfrom">{{bill.exp_from_date}}</td>
@@ -207,6 +235,9 @@
                         </td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
+                        <td>{{bill.quantity}}</td>
+                        <td>{{bill.rate}}</td>
+                        <td>{{bill.gst}}</td>
                         <td>{{bill.amount}}</td>
                         <td class="invdt">{{bill.invoice_date}}</td>
                         <td class="exfrom">{{bill.exp_from_date}}</td>
