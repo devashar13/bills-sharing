@@ -16,6 +16,7 @@
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous"
         ></script>
+        <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
         <link
             href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css"
             rel="stylesheet"
@@ -36,6 +37,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+        <script src="{% static 'js/tableHTMLExport.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.10/jspdf.plugin.autotable.min.js"></script>
         <title>Share Bills</title>
         <style>
             .dataTables_filter {
@@ -143,15 +147,21 @@
             <label for="tablefilter2">Unpaid</label>
             <div>
                 <button class="btn btn-success" id="download-csv">CSV</button>
+                <button class="btn btn-success" id="download-excel">
+                    EXCEL
+                </button>
+                <button class="btn btn-success" id="download-pdf">
+                  PDF
+              </button>
             </div>
             <table
                 id="myTable"
                 class="table table-responsive table-hover table-striped"
                 style="border-bottom: 0cm !important"
             >
-                <thead class="thead-dark">
+                <thead class="thead-dark" id="tblHead">
                     <tr>
-                        <th></th>
+                        <th class="noExport"></th>
                         <th>Bill No</th>
                         <th>Vendor</th>
                         <th>Exp Id</th>
@@ -165,7 +175,7 @@
                 <tbody id="tablebody">
                     {% if selectedvendor %} {% for bill in selectbills %}
                     <tr>
-                        <td>
+                        <td class="noExport">
                             <input
                                 type="checkbox"
                                 name="select-rows"
@@ -185,7 +195,7 @@
                     </tr>
                     {% endfor %} {% else %} {% for bill in bills %}
                     <tr>
-                        <td>
+                        <td class="noExport">
                             <input
                                 type="checkbox"
                                 name="select-rows"
@@ -244,7 +254,7 @@
                 columnDefs: [
                     {
                         orderable: false,
-                        className: 'select-checkbox',
+                        // className: 'select-checkbox',
                         targets: 0,
                     },
                 ],
@@ -495,17 +505,19 @@
                 var csv = [];
                 // console.log(data);
                 // var rows = data.querySelectorAll('tr');
-                var rows=[]
-                var intialRows = document.querySelectorAll('table thead tr, table tbody tr');
-                intialRows.forEach((row,i) => {
-                  if(i!==0) {
-                    if(row.querySelector('td input').checked){
-                      rows.push(row)
+                var rows = [];
+                var intialRows = document.querySelectorAll(
+                    'table thead tr, table tbody tr'
+                );
+                intialRows.forEach((row, i) => {
+                    if (i !== 0) {
+                        if (row.querySelector('td input').checked) {
+                            rows.push(row);
+                        }
+                    } else {
+                        rows.push(row);
                     }
-                  } else {
-                    rows.push(row)
-                  }
-                })
+                });
 
                 for (var i = 0; i < rows.length; i++) {
                     var row = [],
@@ -521,7 +533,9 @@
                 download_csv(csv.join('\n'), filename);
             } else {
                 var csv = [];
-                var rows = document.querySelectorAll('table thead tr, table tbody tr');
+                var rows = document.querySelectorAll(
+                    'table thead tr, table tbody tr'
+                );
 
                 for (var i = 0; i < rows.length; i++) {
                     var row = [],
@@ -578,5 +592,123 @@
                     export_table_to_csv(html, 'full', 'table.csv');
                 }
             });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // console.log(jQuery(document.getElementById("download-excel")))
+            $('#download-excel').click(function () {
+                // const data = document.createElement('table');
+                // var table = document.getElementById('myTable');
+                var checkboxes = document.querySelectorAll(
+                    'input[name=select-rows]:checked'
+                );
+                var checksArray = [];
+                if (checkboxes.length > 0) {
+                    checkboxes.forEach((checkbox) => {
+                        checksArray.push(checkbox.parentNode.parentNode);
+                    });
+                    var tbody = document.createElement('tbody');
+                    var ihtml = `
+                    <thead>
+                      <tr>
+                          <th class="noExport"></th>
+                          <th>Bill No</th>
+                          <th>Vendor</th>
+                          <th>Exp Id</th>
+                          <th>Bill Amt</th>
+                          <th>Invoice Date</th>
+                          <th>Expense From</th>
+                          <th>Expense To</th>
+                          <th>Status</th>
+                      </tr>
+                      </thead>
+                      <tbody>`;
+                    var table = document.createElement('table');
+                    table.innerHTML += ihtml;
+                    checksArray.forEach((element) => {
+                        table.innerHTML += element.outerHTML;
+                    });
+                    table.innerHTML += '</tbody>';
+                    table.removeChild(table.querySelector('tbody'));
+                    // table.appendChild(tbody)
+                    // console.log(table);
+                    jQuery(table).table2excel({
+                        exclude: '.noExport',
+                        filename: 'table',
+                    });
+                } else {
+                    $('#myTable').table2excel({
+                        exclude: '.noExport',
+                        filename: 'table',
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // console.log(jQuery(document.getElementById("download-excel")))
+            $('#download-pdf').click(function () {
+                // const data = document.createElement('table');
+                // var table = document.getElementById('myTable');
+                var checkboxes = document.querySelectorAll(
+                    'input[name=select-rows]:checked'
+                );
+                var checksArray = [];
+                if (checkboxes.length > 0) {
+                    checkboxes.forEach((checkbox) => {
+                        checksArray.push(checkbox.parentNode.parentNode);
+                    });
+                    var tbody = document.createElement('tbody');
+                    var pdfhtml = `
+                  <thead>
+                    <tr>
+                        <th class="noExport"></th>
+                        <th>Bill No</th>
+                        <th>Vendor</th>
+                        <th>Exp Id</th>
+                        <th>Bill Amt</th>
+                        <th>Invoice Date</th>
+                        <th>Expense From</th>
+                        <th>Expense To</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>`;
+                    var table = document.createElement('table');
+                    table.innerHTML += pdfhtml;
+                    checksArray.forEach((element) => {
+                        table.innerHTML += element.outerHTML;
+                    });
+                    table.innerHTML += '</tbody>';
+                    table.removeChild(table.querySelector('tbody'));
+                    // table.appendChild(tbody)
+                    // console.log(table);
+                    jQuery(table).tableHTMLExport({
+                        // csv, txt, json, pdf
+                        type: 'pdf',
+                        orientation: 'p',
+
+                        // file name
+                        filename: 'table.pdf',
+
+                        ignoreColumns: '.noExport',
+                        ignoreRows: '.noExport',
+                    });
+                } else {
+                    $('#myTable').tableHTMLExport({
+                        // csv, txt, json, pdf
+                        type: 'pdf',
+                        orientation: 'p',
+
+                        // file name
+                        filename: 'table.pdf',
+
+                        ignoreColumns: '.noExport',
+                        ignoreRows: '.noExport',
+                    });
+                }
+            });
+        });
     </script>
 </html>
