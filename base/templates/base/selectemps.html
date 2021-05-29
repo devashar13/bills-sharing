@@ -30,10 +30,11 @@
             </thead>
             <tbody id="tblbody">
                 {% for emp in emps %}
-                <tr on id = {{emp.id}}>
+                <tr style = "cursor:pointer" id = {{emp.id}}>
                     <td>{{emp}}</td>
                 </tr>
                 {% endfor %}
+                
                 
             </tbody>
     </div>

@@ -32,6 +32,7 @@
                 <span>Filter by Name</span>
             </div>
         </div>
+ 
         <table class="table table-striped" id="tbl">
             <thead>
                 <tr>
@@ -40,12 +41,15 @@
             </thead>
             <tbody id="tblbody">
                 {% for vendor in allocated %}
-                <tr id = "{{empid}}">
+                <tr style="display: flex; justify-content: space-between;" id = "{{empid}}">
                     <td id = "{{vendor.vendor__id}}">{{vendor.vendor__name}}</td>
                     <td><button  value="{{vendor.vendor__id}}" class="delbtn btn btn-danger">Remove Vendor</button></td>
                 </tr>
                 {% endfor %}
+                
             </tbody>
+        </table>
+
     </div>
 </div>
 <div
@@ -85,7 +89,7 @@
                         
                         {% for vendor in vendornames %}
                         <label for="one">
-                            <input class = "vends" type="checkbox" id="{{vendor.id}}" />{{vendor.name}}
+                            <input class = "vends mx-1 my-1" type="checkbox" id="{{vendor.id}}" />{{vendor.name}}
                         </label>
                         {% endfor%}
                     </div>
