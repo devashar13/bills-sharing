@@ -102,6 +102,7 @@ class Vendor(models.Model):
     name = models.CharField(max_length=225)
     email = models.EmailField(unique=True,null=True,blank=True)
     expense_ids = models.ManyToManyField(ExpenseID,null=True,blank=True)
+    GSTIN = models.CharField(max_length=15,null=True,blank=True)
 
     def __str__(self):
         return self.name
@@ -134,6 +135,8 @@ class Bill(models.Model):
     other=models.ForeignKey(BillOther, on_delete=models.CASCADE,null=True,blank=True)
     total_amount = models.DecimalField(max_digits=10,decimal_places=3)
     due_payment = models.DateField()
+    narration = models.TextField(null=True,blank=True)
+    
     paid = models.BooleanField(default=False)
 
     def __str__(self):

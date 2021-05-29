@@ -44,7 +44,7 @@
 			<span>V Inv No</span>
 		</div>
         <div class="custom-form-group">
-            <input name="v-inv-dt"  id="v-inv-dt" type="text" onfocus="(this.type='date')" onfocusout="(this.type='text')" required/>
+            <input name="v-inv-dt"  id="v-inv-dt" type="text" required/>
 			<span>V Inv Date</span>
 		</div>
         <div class="custom-form-group">
@@ -69,20 +69,24 @@
 			<span>Quantity</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.01" name="rate" id="rate" type="number" required/>
+            <input class="cost" step="0.1" name="rate" id="rate" type="number" required/>
 			<span>Rate</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.01" name="amount" id="amount" type="number" required/>
+            <input class="cost" step="0.1" name="amount" id="amount" type="number" required/>
 			<span>Amount</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.01" name="gst" id="gst" type="number" required/>
+            <input class="cost" step="0.1" name="gst" id="gst" type="number" required/>
 			<span>GST</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.01" name="total" id="total" type="number" required/>
+            <input class="cost" step="0.1" name="total" id="total" type="number" required/>
 			<span>Total Amount</span>
+		</div>
+        <div class="custom-form-group">
+            <textarea  name="narration" id="narration" type="text" required></textarea>
+			<span>Narration</span>
 		</div>
         <div class="custom-form-group">
             <input name="due" id="due" type="text" required/>
@@ -132,6 +136,12 @@
         onClose: function (selectedDate) {
             $("#ex-to-date").datepicker("option", "minDate", selectedDate);
         }
+    });
+    $("#v-inv-dt").datepicker({
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        numberOfMonths: 1,
+        minDate:0,
     });
     $("#ex-to-date").datepicker({
         dateFormat: 'yy-mm-dd',

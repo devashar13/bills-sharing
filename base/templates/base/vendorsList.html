@@ -98,6 +98,10 @@
                             <input type="email" id="vmail" required />
                             <span>Email</span>
                         </div>
+                        <div class="custom-form-group">
+                            <input type="text" id="gstin" required />
+                            <span>GSTIN</span>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -159,10 +163,13 @@
     $('#addVendorButton').click(function () {
         var vname = $('#vname').val();
         var vmail = $('#vmail').val();
-        if (vname === '' || vmail === '') {
+        var gstin = $('#gstin').val();
+        if (vname === '' || vmail === '' || gstin === ''  ) {
             alert('Vendor Name and Vendor Email is Compulsory');
         } else if(validateEmail(vmail) === false) {
             alert('Email is invalid');
+        }else if(gstin.length !== 15){
+            alert('GSTIN should be 15 digits');
         } else {
             $.ajax({
                 headers: { 'X-CSRFToken': '{{csrf_token}}' },
@@ -172,6 +179,7 @@
                 data: {
                     vname: vname,
                     vmail: vmail,
+                    gstin: gstin,
                 },
                 success: function (response) {
                     console.log(response);

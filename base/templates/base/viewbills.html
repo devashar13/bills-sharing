@@ -27,7 +27,7 @@
             integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
             crossorigin="anonymous"
         ></script>
-       
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
@@ -63,6 +63,14 @@
             .modal-open .modal {
                 z-index: 1050;
             }
+
+            #myTable  { overflow: auto; height: 100vh; }
+#myTable thead th { position: sticky; top: 0; z-index: 1; }
+
+/* Just common table stuff. Really. */
+table  { border-collapse: collapse; width: 100%; height: 100vh; background-color: white; }
+th, td { padding: 8px 16px; }
+th     { background:#eee; }
         </style>
     </head>
     <body>
@@ -115,10 +123,10 @@
                             >
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" href="{%url 'selectEmployee'%}"
-                              >Employee Management</a
-                          >
-                      </li>
+                            <a class="nav-link" href="{%url 'selectEmployee'%}"
+                                >Employee Management</a
+                            >
+                        </li>
                         {% endif %}
                     </ul>
                 </div>
@@ -129,8 +137,29 @@
                 >
             </div>
         </nav>
-        <div class="container py-5" >
+        <div class="container py-5">
             <div class="mb-3">
+                <div class="d-inline-block">
+                    <label for="ex-from-date">Bill Number: </label>
+
+                    <input
+                        class="filter1"
+                        name="searchbill"
+                        id="searchbill"
+                        type="text"
+                    />
+                </div>
+                <div class="d-inline-block">
+                    <label for="ex-from-date">Vendor Name: </label>
+
+                    <input
+                        class="filter1"
+                        name="searchvendor"
+                        id="searchvendor"
+                        type="text"
+                    />
+                </div>
+
                 <div class="d-inline-block">
                     <label for="bill-dt">Invoive Date: </label>
                     <input
@@ -138,8 +167,10 @@
                         name="bill-dt"
                         id="search1"
                         type="date"
-                        placeholder="dd-mm-yyyy" value=""
-		                min="1997-01-01" max="2030-12-31"
+                        placeholder="dd-mm-yyyy"
+                        value=""
+                        min="1997-01-01"
+                        max="2030-12-31"
                     />
                 </div>
                 <div class="d-inline-block">
@@ -162,7 +193,13 @@
                     />
                 </div>
                 <div class="d-inline-block ml-2">
-                  <button class="btn btn-warning" style="color: black;" onclick="performReset()">CLEAR DATE FILTERS</button>
+                    <button
+                        class="btn btn-warning"
+                        style="color: black"
+                        onclick="performReset()"
+                    >
+                        CLEAR FILTERS
+                    </button>
                 </div>
 
                 <div class="d-inline-block">
@@ -172,6 +209,7 @@
                             type="checkbox"
                             value="Paid"
                             id="tablefilter1"
+                            class="filter"
                             checked
                         />
                         <label for="tablefilter1">Paid</label>
@@ -182,6 +220,7 @@
                             type="checkbox"
                             value="Unpaid"
                             id="tablefilter2"
+                            class="filter"
                             checked
                         />
                         <label for="tablefilter2">Unpaid</label>
@@ -201,9 +240,9 @@
                 </button>
             </div>
             <table
-            id="myTable"
-            class="table table-responsive table-hover table-striped"
-            style="border-bottom: 0cm !important;;"
+                id="myTable"
+                class="table table-responsive table-hover table-striped"
+                style="border-bottom: 0cm !important "
             >
                 <thead class="thead-dark" id="tblHead">
                     <tr>
@@ -231,13 +270,21 @@
                                 id="{{ bill.invoice_num }}"
                             />
                         </td>
-                        <td class="invoice" style="cursor: pointer">{{bill.invoice_num}}</td>
+                        <td class="invoice" style="cursor: pointer">
+                            {{bill.invoice_num}}
+                        </td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
                         <td>{{bill.quantity}}</td>
-                        <td>{{bill.rate}}</td>
-                        <td>{{bill.gst}}</td>
-                        <td>{{bill.amount}}</td>
+                        <td class="number-data" style="text-align: right">
+                            {{bill.rate}}
+                        </td>
+                        <td class="number-data" style="text-align: right">
+                            {{bill.gst}}
+                        </td>
+                        <td class="number-data" style="text-align: right">
+                            {{bill.amount}}
+                        </td>
                         <td class="invdt">{{bill.invoice_date}}</td>
                         <td class="exfrom">{{bill.exp_from_date}}</td>
                         <td class="exto">{{bill.exp_to_date}}</td>
@@ -252,13 +299,21 @@
                                 id="{{ bill.invoice_num }}"
                             />
                         </td>
-                        <td class="invoice" style="cursor: pointer">{{bill.invoice_num}}</td>
+                        <td class="invoice" style="cursor: pointer">
+                            {{bill.invoice_num}}
+                        </td>
                         <td>{{bill.vendor__name}}</td>
                         <td>{{bill.expense_id}}</td>
                         <td>{{bill.quantity}}</td>
-                        <td>{{bill.rate}}</td>
-                        <td>{{bill.gst}}</td>
-                        <td>{{bill.amount}}</td>
+                        <td class="number-data" style="text-align: right">
+                            {{bill.rate}}
+                        </td>
+                        <td class="number-data" style="text-align: right">
+                            {{bill.gst}}
+                        </td>
+                        <td class="number-data" style="text-align: right">
+                            {{bill.amount}}
+                        </td>
                         <td class="invdt">{{bill.invoice_date}}</td>
                         <td class="exfrom">{{bill.exp_from_date}}</td>
                         <td class="exto">{{bill.exp_to_date}}</td>
@@ -297,13 +352,11 @@
         </div>
     </body>
     <script>
-        document.querySelector('body').style.overflowY = "scroll"
+        document.querySelector('body').style.overflowY = 'scroll';
     </script>
 
     <script>
-        $(document).ready(function () {
-           
-        });
+        $(document).ready(function () {});
         //   $(document).ready(function() {
 
         //     $('#myTable').DataTable( {
@@ -368,6 +421,8 @@
     </script>
     <script>
         function performReset() {
+            document.getElementById('searchbill').value = '';
+            document.getElementById('searchvendor').value = '';
             document.getElementById('search1').value = '';
             document.getElementById('search2').value = '';
             document.getElementById('search3').value = '';
@@ -375,30 +430,88 @@
         }
 
         function filterTable(event, index) {
-            console.log(document.getElementById('search1').value)
-            var filter = event.target.value.toUpperCase();
+            // console.log(document.getElementById('search1').value);
+            var billinput = document.getElementById("searchbill").value.toUpperCase();
+            console.log(typeof(billinput))
+            var vendorinput = document.getElementById("searchvendor").value.toUpperCase();
+            var filter1 = document.getElementById("search1").value.toUpperCase();
+            var filter2 = document.getElementById("search2").value.toUpperCase();
+            var filter3 = document.getElementById("search3").value.toUpperCase();
+            // console.log(filter);
+            console.log("PARTITION");
             var rows = document.querySelector('#mytable tbody').rows;
+            function checkPaidUnpaid(data) {
+                // if(filter !== 'UNPAID' &&)
+                // if (filter === 'PAID' && data === 'PAID') {
+                //     return event.target.checked;
+                // } else if (filter === 'UNPAID' && data === 'UNPAID') {
+                //     return event.target.checked;
+                // } else if((filter === 'PAID' && data === 'UNPAID') || (filter === 'UNPAID' && data === 'PAID') || (filter !=="PAID") || (filter!=="UNPAID")) {
+                //     return true
+                // } else {
+                //     // console.log(false);
+                //     return false;
+                // }
+
+                var tfp = document.getElementById("tablefilter1")
+                var tfup = document.getElementById("tablefilter2")
+                if((tfp.checked && data==="PAID") || (tfup.checked && data==="UNPAID")) {
+                    return true
+                } else {
+                    return false
+                }
+
+            }
             for (var i = 0; i < rows.length; i++) {
+                var billno = rows[i].cells[1].textContent.toUpperCase();
+                console.log((billno.trim()))
+                var vendor = rows[i].cells[2].textContent.toUpperCase();
                 var firstCol = rows[i].cells[8].textContent.toUpperCase();
                 var secondCol = rows[i].cells[9].textContent.toUpperCase();
                 var thirdCol = rows[i].cells[10].textContent.toUpperCase();
-                // console.log(firstCol,secondCol,thirdCol)
+                var fourthCol = rows[i].cells[11].textContent.toUpperCase();
+                // console.log('hello,', fourthCol);
+                // console.log(checkPaidUnpaid(fourthCol));
+                // console.log((firstCol.indexOf(filter1) > -1) || document.getElementById("search1").value == '' )
+                // console.log((secondCol.indexOf(filter2) > -1)|| document.getElementById("search2").value == '')
+                // console.log((thirdCol.indexOf(filter3) > -1) || document.getElementById("search3").value == '')
+                // console.log(checkPaidUnpaid(fourthCol))
+                
                 if (
-                    (firstCol.indexOf(filter) > -1 && index == 0) ||
-                    (secondCol.indexOf(filter) > -1 && index == 1) ||
-                    (thirdCol.indexOf(filter) > -1 && index == 2)
+                
+                    ((billno.trim().startsWith(billinput)) || document.getElementById("searchbill").value == '' ) &&
+                    ((vendor.trim().startsWith(vendorinput)) || document.getElementById("searchvendor").value == '' ) &&
+                    ((firstCol.indexOf(filter1) > -1) || document.getElementById("search1").value == '' ) &&
+                    ((secondCol.indexOf(filter2) > -1)|| document.getElementById("search2").value  == '') &&
+                    ((thirdCol.indexOf(filter3) > -1) || document.getElementById("search3").value  == '') &&
+                    checkPaidUnpaid(fourthCol)
                 ) {
                     rows[i].style.display = '';
                 } else {
-                  rows[i].children[0].querySelector("input").checked=false
+                    rows[i].children[0].querySelector('input').checked = false;
                     rows[i].style.display = 'none';
                 }
+
+                // if(checkPaidUnpaid(data)) {
+                //     rows[i].style.display = ''
+                // }
             }
         }
 
         document.querySelectorAll('input.filter').forEach(function (el, idx) {
+            // console.log(el);
             el.addEventListener(
                 'change',
+                function (e) {
+                    filterTable(e, idx);
+                },
+                false
+            );
+        });
+        document.querySelectorAll('input.filter1').forEach(function (el, idx) {
+            // console.log(el);
+            el.addEventListener(
+                'keyup',
                 function (e) {
                     filterTable(e, idx);
                 },
@@ -443,7 +556,7 @@
         });
     </script>
 
-    <script>
+    <!-- <script>
         /* Demo filtering table using checkboxes. Filters against first td value */
 
         /* Set 'ready' handler' */
@@ -488,7 +601,7 @@
                 rows[i].style.display = display;
             }
         }
-    </script>
+    </script> -->
 
     <!-- <script type="text/javascript">
   function exportToExcel(tableID, filename = ''){
@@ -761,6 +874,11 @@
                     });
                 }
             });
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.number-data').forEach((element) => {
+            element.innerHTML = parseFloat(element.innerHTML).toFixed(2);
         });
     </script>
 </html>

@@ -10,6 +10,8 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
 
+
+
 def loginView(request):
     if request.method == "POST":
         try:
@@ -46,7 +48,8 @@ def getVendors(request):
     userTypeList = list(request.user.type)
     print(userTypeList)
     if "supervisor" in userTypeList:
-        vendors = Vendor.objects.all()
+        vendors = Vendor.objects.all().order_by("name")
+        print(vendors)
         return render(request, 'base/vendorsList.html', {'vendors': vendors,'userType':userTypeList})
     else:
         return redirect('addBill')   
@@ -61,7 +64,8 @@ def addVendor(request):
             data=request.POST
             vname=data.get("vname")
             vemail = data.get("vmail")
-            v = Vendor(name=vname,email=vemail)
+            gstin = data.get("gstin")
+            v = Vendor(name=vname,email=vemail,GSTIN = gstin)
             v.save()
         
             return render(request,'base/vendorsList.html')
@@ -241,6 +245,8 @@ def saveBill(request):
         amount = Decimal(data.get("amount"))
         gst = Decimal(data.get("gst"))
         total_amount = Decimal(data.get("total"))
+        narration = (data.get("narration"))
+        
         due_payment = data.get("due")
         files = data.get("myFileInput")
 
@@ -251,6 +257,7 @@ def saveBill(request):
             expense_id = expense_id,
             exp_from_date = exp_from_date,
             exp_to_date = exp_to_date,
+            narration = narration,
             quantity = quantity,
             rate = (rate),
             amount = (amount),
