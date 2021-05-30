@@ -138,9 +138,7 @@ class Bill(models.Model):
     total_amount = models.DecimalField(max_digits=10,decimal_places=3)
     due_payment = models.DateField()
     narration = models.TextField(null=True,blank=True)
-    
     paid = models.BooleanField(default=False)
-
     def __str__(self):
         return self.invoice_num
 
