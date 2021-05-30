@@ -69,19 +69,27 @@
 			<span>Quantity</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.1" name="rate" id="rate" type="number" required/>
+            <input class="cost" step="0.01" name="rate" id="rate" type="number" required/>
 			<span>Rate</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.1" name="amount" id="amount" type="number" required/>
+            <input class="cost" step="0.01" name="amount" id="amount" type="number" required/>
 			<span>Amount</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.1" name="gst" id="gst" type="number" required/>
-			<span>GST</span>
+            <input class="cost" step="0.01" name="sgst" id="sgst" type="number"/>
+			<span>SGST</span>
 		</div>
         <div class="custom-form-group">
-            <input class="cost" step="0.1" name="total" id="total" type="number" required/>
+            <input class="cost" step="0.01" name="cgst" id="cgst" type="number"/>
+			<span>CGST</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="igst" id="igst" type="number" />
+			<span>IGST</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="total" id="total" type="number" required/>
 			<span>Total Amount</span>
 		</div>
         <div class="custom-form-group">
@@ -162,20 +170,16 @@
 $("#rate").keyup(function(){
     console.log($("#qty").val())
    total = $("#qty").val()* $("#rate").val();
-   $("#amount").val(total);
+   $("#amount").val(total).trigger("change");
 });
 $("#qty").keyup(function(){
     console.log($("#qty").val())
    total = $("#qty").val()* $("#rate").val();
-   $("#amount").val(total);
+   $("#amount").val(total).trigger('change');
 });
-$("#qty").keyup(function(){
-    console.log($("#qty").val())
-   total = $("#qty").val()* $("#rate").val();
-   $("#amount").val(total);
-});
+
 $("#total").focus(function(){
-   total = Number($("#amount").val()) + Number($("#gst").val());
+   total = Number($("#amount").val()) + Number($("#sgst").val())+Number($("#cgst").val())+Number($("#igst").val());
    $("#total").val(total);
 });
 $("#total").focusout(function(){
@@ -183,7 +187,31 @@ $("#total").focusout(function(){
         $("#total").val('')
     }
 });
-
+$("#rate").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#amount").change(function(){
+    console.log("hi")
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#total").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#sgst").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#cgst").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#igst").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
 </script>
 <script>
     $(document).ready(() => {

@@ -71,6 +71,7 @@
 table  { border-collapse: collapse; width: 100%; height: 100vh; background-color: white; }
 th, td { padding: 8px 16px; }
 th     { background:#eee; }
+
         </style>
     </head>
     <body>
@@ -156,6 +157,16 @@ th     { background:#eee; }
                         class="filter1"
                         name="searchvendor"
                         id="searchvendor"
+                        type="text"
+                    />
+                </div>
+                <div class="d-inline-block">
+                    <label for="amt">Amount: </label>
+
+                    <input
+                        class="filter"
+                        name="amount"
+                        id="amount"
                         type="text"
                     />
                 </div>
@@ -252,8 +263,11 @@ th     { background:#eee; }
                         <th>Exp Id</th>
                         <th>Quantity</th>
                         <th>Rate</th>
-                        <th>GST</th>
                         <th>Bill Amt</th>
+                        <th>SGST</th>
+                        <th>CGST</th>
+                        <th>IGST</th>
+                        <th>Bill Total</th>
                         <th>Invoice Date</th>
                         <th>Expense From</th>
                         <th>Expense To</th>
@@ -280,10 +294,19 @@ th     { background:#eee; }
                             {{bill.rate}}
                         </td>
                         <td class="number-data" style="text-align: right">
-                            {{bill.gst}}
+                            {{bill.amount}}
+                        </td>
+                        <td class="number-data gst" style="text-align: right">
+                            {{bill.sgst}}
+                        </td>
+                        <td class="number-data gst" style="text-align: right">
+                            {{bill.cgst}}
+                        </td>
+                        <td class="number-data gst" style="text-align: right">
+                            {{bill.igst}}
                         </td>
                         <td class="number-data" style="text-align: right">
-                            {{bill.amount}}
+                            {{bill.total_amount}}
                         </td>
                         <td class="invdt">{{bill.invoice_date}}</td>
                         <td class="exfrom">{{bill.exp_from_date}}</td>
@@ -309,10 +332,19 @@ th     { background:#eee; }
                             {{bill.rate}}
                         </td>
                         <td class="number-data" style="text-align: right">
-                            {{bill.gst}}
+                            {{bill.amount}}
+                        </td>
+                        <td class="number-data gst" style="text-align: right">
+                            {{bill.sgst}}
+                        </td>
+                        <td class="number-data gst" style="text-align: right">
+                            {{bill.cgst}}
+                        </td>
+                        <td class="number-data gst" style="text-align: right">
+                            {{bill.igst}}
                         </td>
                         <td class="number-data" style="text-align: right">
-                            {{bill.amount}}
+                            {{bill.total_amount}}
                         </td>
                         <td class="invdt">{{bill.invoice_date}}</td>
                         <td class="exfrom">{{bill.exp_from_date}}</td>
@@ -356,6 +388,13 @@ th     { background:#eee; }
     </script>
 
     <script>
+        $(".gst").each(function(){
+            var val = $(this).html()
+            console.log(val.trim())
+            if(val.trim() === "None"){
+                $(this).html("0.00")
+            }
+        })
         $(document).ready(function () {});
         //   $(document).ready(function() {
 
@@ -434,6 +473,7 @@ th     { background:#eee; }
             var billinput = document.getElementById("searchbill").value.toUpperCase();
             console.log(typeof(billinput))
             var vendorinput = document.getElementById("searchvendor").value.toUpperCase();
+            var amountinput = document.getElementById("amount").value.toUpperCase();
             var filter1 = document.getElementById("search1").value.toUpperCase();
             var filter2 = document.getElementById("search2").value.toUpperCase();
             var filter3 = document.getElementById("search3").value.toUpperCase();
@@ -466,10 +506,11 @@ th     { background:#eee; }
                 var billno = rows[i].cells[1].textContent.toUpperCase();
                 console.log((billno.trim()))
                 var vendor = rows[i].cells[2].textContent.toUpperCase();
-                var firstCol = rows[i].cells[8].textContent.toUpperCase();
-                var secondCol = rows[i].cells[9].textContent.toUpperCase();
-                var thirdCol = rows[i].cells[10].textContent.toUpperCase();
-                var fourthCol = rows[i].cells[11].textContent.toUpperCase();
+                var amount = rows[i].cells[6].textContent.toUpperCase();
+                var firstCol = rows[i].cells[11].textContent.toUpperCase();
+                var secondCol = rows[i].cells[12].textContent.toUpperCase();
+                var thirdCol = rows[i].cells[13].textContent.toUpperCase();
+                var fourthCol = rows[i].cells[14].textContent.toUpperCase();
                 // console.log('hello,', fourthCol);
                 // console.log(checkPaidUnpaid(fourthCol));
                 // console.log((firstCol.indexOf(filter1) > -1) || document.getElementById("search1").value == '' )

@@ -243,7 +243,9 @@ def saveBill(request):
         quantity = data.get("qty")
         rate = Decimal(data.get("rate"))
         amount = Decimal(data.get("amount"))
-        gst = Decimal(data.get("gst"))
+        sgst = Decimal(data.get("sgst"))
+        cgst = Decimal(data.get("cgst"))
+        igst = Decimal(data.get("igst"))
         total_amount = Decimal(data.get("total"))
         narration = (data.get("narration"))
         
@@ -261,7 +263,9 @@ def saveBill(request):
             quantity = quantity,
             rate = (rate),
             amount = (amount),
-            gst = (gst),
+            sgst = (sgst),
+            cgst = (cgst),
+            igst = (igst),
             total_amount = (total_amount),
             due_payment = due_payment
         )
@@ -285,9 +289,10 @@ def viewBills(request):
     bills = Bill.objects.values(
         "vendor__name",'invoice_num','invoice_date',
         'expense_id','exp_from_date','exp_to_date',
-        'quantity','rate','amount','gst','other',
+        'quantity','rate','amount','sgst','cgst','igst','other',
         'total_amount','due_payment','paid'
         )
+    print(bills)
     return render(request,'base/viewbills.html',{"bills":bills,"userType":userTypeList})
 
 @login_required(login_url='/login/')

@@ -86,7 +86,7 @@ a, a:hover, a:focus, a:active {
 }
 .custom-form-group input:focus + span,
 .custom-form-group textarea:focus + span,
-.custom-form-group input:valid + span,
+.custom-form-group input[type='text']:valid + span,
 .custom-form-group textarea:valid + span {
     color: #fff;
     background: #025175;
@@ -104,7 +104,7 @@ a, a:hover, a:focus, a:active {
 
 .custom-form-group input:focus + .b-span,
 .custom-form-group textarea:focus + .b-span,
-.custom-form-group input:valid + .b-span,
+.custom-form-group input[type='text']:valid + .b-span,
 .custom-form-group textarea:valid + .b-span {
     color: #fff;
     background: #025175;
@@ -187,5 +187,6 @@ input[type='file']::file-selector-button {
 @media only screen and (max-width: 800px) {
     .v-card {
       flex-direction: column !important;
+      
     }
   }
