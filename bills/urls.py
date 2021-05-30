@@ -25,6 +25,11 @@ urlpatterns = [
     path("home/",homeView,name="home"),
     path("vendors/",getVendors,name = "getVendors"),
     path("addvendor/",addVendor,name = "addVendor"),
+    path("removevendor/",removeVendor,name = "removeVendor"),
+    path("manageexp/",manageExpenseId,name = "manageExpenseId"),
+    path("removeexpid/",removeExpId,name = "removeExpId"),
+    
+    
     path("vendordetail/<int:vendorid>/",vendorDetails,name="vendorDetails"),
     path("getexpenseidsforvendor/",getExpenseIdsForVendor,name="getExpenseIdsForVendor"),
     path("addexpenseidtovendor/",addExpenseID,name="addExpenseID"),

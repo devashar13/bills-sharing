@@ -51,6 +51,11 @@
                             ADD BILL
                         </button>
                     </td>
+                    <td>
+                        <button class="remove-bill btn btn-danger">
+                            REMOVE VENDOR
+                        </button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -190,6 +195,22 @@
             }, 1500);
         }
     });
+    $(".remove-bill").click(function(){
+        vendorid = event.target.parentNode.parentNode.id;
+        $.ajax({
+                headers: { 'X-CSRFToken': '{{csrf_token}}' },
+                type: 'POST',
+                url: '/removevendor/',
+                dataType: 'json',
+                data: {
+                    vid:vendorid
+                },
+                success: function (response) {
+                    console.log(response);
+                    location.reload()
+                },
+            });
+    })
     
 </script>
 

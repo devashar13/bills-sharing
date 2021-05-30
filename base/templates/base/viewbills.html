@@ -170,6 +170,16 @@ th     { background:#eee; }
                         type="text"
                     />
                 </div>
+                <div class="d-inline-block">
+                    <label for="amt">Amount Total: </label>
+
+                    <input
+                        class="filter"
+                        name="amounttotal"
+                        id="amounttotal"
+                        type="text"
+                    />
+                </div>
 
                 <div class="d-inline-block">
                     <label for="bill-dt">Invoive Date: </label>
@@ -460,6 +470,9 @@ th     { background:#eee; }
     </script>
     <script>
         function performReset() {
+            document.getElementById('amount').value = '';
+            document.getElementById('amounttotal').value = '';
+
             document.getElementById('searchbill').value = '';
             document.getElementById('searchvendor').value = '';
             document.getElementById('search1').value = '';
@@ -474,6 +487,8 @@ th     { background:#eee; }
             console.log(typeof(billinput))
             var vendorinput = document.getElementById("searchvendor").value.toUpperCase();
             var amountinput = document.getElementById("amount").value.toUpperCase();
+            var amounttotalinput = document.getElementById("amounttotal").value.toUpperCase();
+
             var filter1 = document.getElementById("search1").value.toUpperCase();
             var filter2 = document.getElementById("search2").value.toUpperCase();
             var filter3 = document.getElementById("search3").value.toUpperCase();
@@ -507,6 +522,7 @@ th     { background:#eee; }
                 console.log((billno.trim()))
                 var vendor = rows[i].cells[2].textContent.toUpperCase();
                 var amount = rows[i].cells[6].textContent.toUpperCase();
+                var amounttotal = rows[i].cells[10].textContent.toUpperCase();
                 var firstCol = rows[i].cells[11].textContent.toUpperCase();
                 var secondCol = rows[i].cells[12].textContent.toUpperCase();
                 var thirdCol = rows[i].cells[13].textContent.toUpperCase();
@@ -519,7 +535,8 @@ th     { background:#eee; }
                 // console.log(checkPaidUnpaid(fourthCol))
                 
                 if (
-                
+                    ((amount.trim().startsWith(amountinput)) || document.getElementById("amount").value == '' ) &&
+                    ((amounttotal.trim().startsWith(amounttotalinput)) || document.getElementById("amounttotal").value == '' ) &&
                     ((billno.trim().startsWith(billinput)) || document.getElementById("searchbill").value == '' ) &&
                     ((vendor.trim().startsWith(vendorinput)) || document.getElementById("searchvendor").value == '' ) &&
                     ((firstCol.indexOf(filter1) > -1) || document.getElementById("search1").value == '' ) &&
@@ -763,17 +780,23 @@ th     { background:#eee; }
             .addEventListener('click', function () {
                 table = `
                     <thead class="thead-dark">
-                      <tr>
-                          <th></th>
-                          <th>Bill No</th>
-                          <th>Vendor</th>
-                          <th>Exp Id</th>
-                          <th>Bill Amt</th>
-                          <th>Invoice Date</th>
-                          <th>Expense From</th>
-                          <th>Expense To</th>
-                          <th>Status</th>
-                      </tr>
+                        <tr>
+                        <th class="noExport"></th>
+                        <th>Bill No</th>
+                        <th>Vendor</th>
+                        <th>Exp Id</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Bill Amt</th>
+                        <th>SGST</th>
+                        <th>CGST</th>
+                        <th>IGST</th>
+                        <th>Bill Total</th>
+                        <th>Invoice Date</th>
+                        <th>Expense From</th>
+                        <th>Expense To</th>
+                        <th>Status</th>
+                    </tr>
                     </thead>
                     <tbody>`;
 
@@ -816,17 +839,23 @@ th     { background:#eee; }
                     var tbody = document.createElement('tbody');
                     var ihtml = `
                     <thead>
-                      <tr>
-                          <th class="noExport"></th>
-                          <th>Bill No</th>
-                          <th>Vendor</th>
-                          <th>Exp Id</th>
-                          <th>Bill Amt</th>
-                          <th>Invoice Date</th>
-                          <th>Expense From</th>
-                          <th>Expense To</th>
-                          <th>Status</th>
-                      </tr>
+                        <tr>
+                        <th class="noExport"></th>
+                        <th>Bill No</th>
+                        <th>Vendor</th>
+                        <th>Exp Id</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Bill Amt</th>
+                        <th>SGST</th>
+                        <th>CGST</th>
+                        <th>IGST</th>
+                        <th>Bill Total</th>
+                        <th>Invoice Date</th>
+                        <th>Expense From</th>
+                        <th>Expense To</th>
+                        <th>Status</th>
+                    </tr>
                       </thead>
                       <tbody>`;
                     var table = document.createElement('table');
@@ -873,7 +902,13 @@ th     { background:#eee; }
                         <th>Bill No</th>
                         <th>Vendor</th>
                         <th>Exp Id</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
                         <th>Bill Amt</th>
+                        <th>SGST</th>
+                        <th>CGST</th>
+                        <th>IGST</th>
+                        <th>Bill Total</th>
                         <th>Invoice Date</th>
                         <th>Expense From</th>
                         <th>Expense To</th>

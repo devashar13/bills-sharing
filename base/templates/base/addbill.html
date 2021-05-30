@@ -2,11 +2,15 @@
 
 <div class="custom-card login-form-card" >
     <h1 class="form-heading">Enter Invoice</h1>
-    <form class="custom-from" action="/savebill/" method="POST" enctype="multipart/form-data">
+    <form class="custom-from" action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="custom-form-group">
+            {% if msg %}
+            <div class="alert alert-danger" role="alert">
+                {{msg}}
+              </div>
+            {% endif %}
             <p class="b-span">Vendor Name</p>
-           
 			<select name="vendors-name" id="vendors-names">
                 {% if selectedvendor %}
                     {% for vendor in vendorNames %}
@@ -138,7 +142,7 @@
         
     $(function () {
     $("#ex-from-date").datepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'dd-mm-yy',
         changeMonth: true,
         numberOfMonths: 1,
         onClose: function (selectedDate) {
@@ -146,13 +150,12 @@
         }
     });
     $("#v-inv-dt").datepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'dd-mm-yy',
         changeMonth: true,
         numberOfMonths: 1,
-        minDate:0,
     });
     $("#ex-to-date").datepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'dd-mm-yy',
         changeMonth: true,
         numberOfMonths: 1,
         onClose: function (selectedDate) {
@@ -160,7 +163,7 @@
         }
     });
     $("#due").datepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'dd-mm-yy',
         
         changeMonth: true,
         numberOfMonths: 1,
@@ -180,7 +183,7 @@ $("#qty").keyup(function(){
 
 $("#total").focus(function(){
    total = Number($("#amount").val()) + Number($("#sgst").val())+Number($("#cgst").val())+Number($("#igst").val());
-   $("#total").val(total);
+   $("#total").val(total.toFixed(2));
 });
 $("#total").focusout(function(){
     if($("#total").val() === '0') {

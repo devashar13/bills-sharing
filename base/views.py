@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, EmployeeAdditional, Supervisor, Vendor, ExpenseID, Bill, BillImage
 from decimal import Decimal
 from django.http import JsonResponse
-
+import datetime
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import json
 
@@ -71,6 +72,22 @@ def addVendor(request):
             return render(request,'base/vendorsList.html')
         else:
             return redirect('addBill')  
+        
+@login_required(login_url='/login/')
+def removeVendor(request):
+    
+    if request.method=="POST":
+        userTypeList = list(request.user.type)
+        print(userTypeList)
+        if "supervisor" in userTypeList:
+            data=request.POST
+            vid=data.get("vid")
+            print(vid)
+            v = Vendor.objects.filter(id=vid)
+            v.delete()
+            return JsonResponse({"ok":"ok"})
+        else:
+            return redirect('addBill') 
      
 
 @login_required(login_url='/login/')
@@ -81,7 +98,8 @@ def vendorDetails(request,vendorid):
         vendor = Vendor.objects.get(pk=vendorid)
         expenseIds = vendor.expense_ids.all()
         allExpenseIds = ExpenseID.objects.all()
-        return render(request,'base/vendorDetails.html',{'vendor':vendor,'expenseIds':expenseIds,'allExpenseIds':allExpenseIds})
+        print(allExpenseIds)
+        return render(request,'base/vendorDetails.html',{'vendor':vendor,'expenseIds':expenseIds,'allExpenseIds':allExpenseIds,'userType':userTypeList})
 
 
 @login_required(login_url='/login/')
@@ -109,16 +127,44 @@ def createExpenseID(request):
             data = request.POST
             eid = data.get("eid")
             epattern = data.get("epattern")
-            expense = ExpenseID(
-                eid=eid,
-                epattern=epattern
-            )
-            expense.save()
-            return render(request,'base/ExpenseIdAdded.html',{'userType':userTypeList})
+            if ExpenseID.objects.filter(epattern = epattern).exists():
+                return render(request,'base/createExpenseId.html',{'userType':userTypeList,'warn':'Expense Id Exists'})
+            else:
+                expense = ExpenseID(
+                    eid=eid,
+                    epattern=epattern
+                )
+                expense.save()
+                return redirect('manageExpenseId')
         return render(request,'base/createExpenseId.html',{'userType':userTypeList})
     else:
         return redirect("addBill")
+
+def manageExpenseId(request):
+    userTypeList = list(request.user.type)
+    print(userTypeList)
+    if "supervisor" in userTypeList:
+        allExpenseIds = ExpenseID.objects.all()
+        print('hi',allExpenseIds)
+        return render(request,'base/manageexpense.html',{'userType':userTypeList,'allExpenseIds':allExpenseIds})
+    else:
+        return redirect("addBill")
     
+
+def removeExpId(request):
+    if request.method=="POST":
+        userTypeList = list(request.user.type)
+        print(userTypeList)
+        if "supervisor" in userTypeList:
+            data=request.POST
+            eid=data.get("eid")
+            expense = ExpenseID.objects.filter(eid = eid)
+            expense.delete()
+            return JsonResponse({"ok":"ok"})
+        else:
+            return redirect('addBill') 
+    
+
 @login_required(login_url='/login/')    
 def addExpenseID(request):
     userTypeList = list(request.user.type)
@@ -128,9 +174,11 @@ def addExpenseID(request):
             data=request.POST
             selectedeid=data.get("selectedeid")
             vendorid = data.get("vendorid")
+            print(vendorid,selectedeid)
             vendor = Vendor.objects.get(pk=vendorid)
+            print(vendor)
             vendor.expense_ids.add(ExpenseID.objects.get(epattern=selectedeid))
-    
+            
         return render(request,'base/vendorDetails.html')
     else:
         return redirect("addBill")
@@ -140,18 +188,72 @@ def addExpenseID(request):
 def addBill(request):
     userTypeList = list(request.user.type)
     
-    # vendors = Vendor.objects.all().values('name','expense_ids__eid')
-    # vendorNames = Vendor.objects.all().values('name').distinct()
-    if "supervisor" in userTypeList:
-        userTypeList = list(request.user.type)
-        vendors = Vendor.objects.all().values('name','expense_ids__eid')
-        vendorNames = Vendor.objects.all().values('name').distinct()
-        return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+    if request.method == "POST":
+        data = request.POST 
+        vendors_name = data.get("vendors-name")
+        print(vendors_name)
+        vendor = Vendor.objects.filter(name = vendors_name).first()
+        invoice_num = data.get("v-inv-no")
+        invoice_date = data.get("v-inv-dt")
+        expense_id = data.get("vendors-expense")
+        exp_from_date = data.get("ex-from-date")
+        exp_to_date = data.get("ex-to-date")
+        quantity = data.get("qty")
+        rate = Decimal(data.get("rate"))
+        amount = Decimal(data.get("amount"))
+        sgst = Decimal(data.get("sgst"))
+        cgst = Decimal(data.get("cgst"))
+        igst = Decimal(data.get("igst"))
+        total_amount = Decimal(data.get("total"))
+        narration = (data.get("narration"))
+        due_payment = data.get("due")
+        files = data.get("myFileInput")
+        inv_date = datetime.datetime.strptime(invoice_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        exp_from = datetime.datetime.strptime(exp_from_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        exp_to = datetime.datetime.strptime(exp_to_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        due = datetime.datetime.strptime(due_payment, "%d-%m-%Y").strftime("%Y-%m-%d")
+        if Bill.objects.filter(invoice_num =invoice_num ).exists():
+            vendors = Vendor.objects.all().values('name','expense_ids__eid')
+            vendorNames = Vendor.objects.all().values('name').distinct()
+            return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList,"msg":"Invoice Number Already Exists"})
+        else:
+            bill = Bill(
+                vendor = vendor,
+                invoice_num = invoice_num,
+                invoice_date = inv_date,
+                expense_id = expense_id,
+                exp_from_date = exp_from,
+                exp_to_date = exp_to,
+                narration = narration,
+                quantity = quantity,
+                rate = (rate),
+                amount = (amount),
+                sgst = (sgst),
+                cgst = (cgst),
+                igst = (igst),
+                total_amount = (total_amount),
+                due_payment = due
+            )
+            
+            bill.save()
+            for f in request.FILES.getlist('myFileInput'):
+                bi = BillImage(
+                    image = f,
+                    bill = bill
+                )
+                bi.save()
+            return redirect("addBill")
     else:
-        vendorNames = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name').distinct()
-        vendors = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name','vendor__expense_ids__eid')
-        print(vendors)
-        return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+        if "supervisor" in userTypeList:
+            userTypeList = list(request.user.type)
+            vendors = Vendor.objects.all().values('name','expense_ids__eid')
+            vendorNames = Vendor.objects.all().values('name').distinct()
+            return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+        else:
+            vendorNames = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name').distinct()
+            vendors = EmployeeAdditional.objects.filter(user = request.user).values('vendor__name','vendor__expense_ids__eid')
+            print(vendors)
+            return render(request,'base/addbill.html',{'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
 
         
     
@@ -159,13 +261,70 @@ def addBill(request):
 @login_required(login_url='/login/')
 def addBillVendor(request,vendorid):
     userTypeList = list(request.user.type)
-    if 'supervisor' in userTypeList:
-        vendor = Vendor.objects.get(pk=vendorid)
-        vendors = Vendor.objects.all().values('name','expense_ids__eid')
-        vendorNames = Vendor.objects.all().values('name').distinct()
-        return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+    if request.method == "POST":
+        data = request.POST 
+        vendors_name = data.get("vendors-name")
+        print(vendors_name)
+        vendor = Vendor.objects.filter(name = vendors_name).first()
+        invoice_num = data.get("v-inv-no")
+        invoice_date = data.get("v-inv-dt")
+        expense_id = data.get("vendors-expense")
+        exp_from_date = data.get("ex-from-date")
+        exp_to_date = data.get("ex-to-date")
+        quantity = data.get("qty")
+        rate = Decimal(data.get("rate"))
+        amount = Decimal(data.get("amount"))
+        sgst = Decimal(data.get("sgst"))
+        cgst = Decimal(data.get("cgst"))
+        igst = Decimal(data.get("igst"))
+        total_amount = Decimal(data.get("total"))
+        narration = (data.get("narration"))
+        due_payment = data.get("due")
+        files = data.get("myFileInput")
+        inv_date = datetime.datetime.strptime(invoice_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        exp_from = datetime.datetime.strptime(exp_from_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        exp_to = datetime.datetime.strptime(exp_to_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        due = datetime.datetime.strptime(due_payment, "%d-%m-%Y").strftime("%Y-%m-%d")
+        if Bill.objects.filter(invoice_num =invoice_num ).exists():
+            vendor = Vendor.objects.get(pk=vendorid)
+            vendors = Vendor.objects.all().values('name','expense_ids__eid')
+            vendorNames = Vendor.objects.all().values('name').distinct()
+            return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList,"msg":"Invoice Number Already Exists"})
+        else:
+            bill = Bill(
+                vendor = vendor,
+                invoice_num = invoice_num,
+                invoice_date = inv_date,
+                expense_id = expense_id,
+                exp_from_date = exp_from,
+                exp_to_date = exp_to,
+                narration = narration,
+                quantity = quantity,
+                rate = (rate),
+                amount = (amount),
+                sgst = (sgst),
+                cgst = (cgst),
+                igst = (igst),
+                total_amount = (total_amount),
+                due_payment = due
+            )
+            
+            bill.save()
+            for f in request.FILES.getlist('myFileInput'):
+                bi = BillImage(
+                    image = f,
+                    bill = bill
+                )
+                bi.save()
+            return redirect("addBill")
     else:
-        return redirect("addBill")
+        if 'supervisor' in userTypeList:
+            vendor = Vendor.objects.get(pk=vendorid)
+            vendors = Vendor.objects.all().values('name','expense_ids__eid')
+            vendorNames = Vendor.objects.all().values('name').distinct()
+            return render(request,'base/addbill.html',{'selectedvendor':vendor,'vendors':vendors,'vendorNames':vendorNames,"userType":userTypeList})
+        else:
+            return redirect("addBill")
 
 @login_required(login_url='/login/')
 def selectEmployee(request):
@@ -248,17 +407,22 @@ def saveBill(request):
         igst = Decimal(data.get("igst"))
         total_amount = Decimal(data.get("total"))
         narration = (data.get("narration"))
-        
         due_payment = data.get("due")
         files = data.get("myFileInput")
-
+        inv_date = datetime.datetime.strptime(invoice_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        exp_from = datetime.datetime.strptime(exp_from_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        exp_to = datetime.datetime.strptime(exp_to_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        due = datetime.datetime.strptime(due_payment, "%d-%m-%Y").strftime("%Y-%m-%d")
+        print
+        
+      
         bill = Bill(
             vendor = vendor,
             invoice_num = invoice_num,
-            invoice_date = invoice_date,
+            invoice_date = inv_date,
             expense_id = expense_id,
-            exp_from_date = exp_from_date,
-            exp_to_date = exp_to_date,
+            exp_from_date = exp_from,
+            exp_to_date = exp_to,
             narration = narration,
             quantity = quantity,
             rate = (rate),
@@ -267,7 +431,7 @@ def saveBill(request):
             cgst = (cgst),
             igst = (igst),
             total_amount = (total_amount),
-            due_payment = due_payment
+            due_payment = due
         )
         
         bill.save()

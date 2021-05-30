@@ -1,6 +1,12 @@
-{% extends 'base/base.html' %} {% block 'card-content' %}
+{% extends 'base/base.html' %}{% block 'card-content' %}
 <div class="custom-card vendor-details-card">
 	<h1 class="form-heading">Create EXPENSE ID</h1>
+	{% if warn %}
+	<div class="alert alert-danger" role="alert">
+		{{warn}}
+	  </div>
+	{% endif %}
+	
 	<form class="custom-form" action="/createexpenseid/" method="POST">
 		{% csrf_token %}
 		<div class="custom-form-group">

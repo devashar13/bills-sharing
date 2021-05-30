@@ -1,6 +1,9 @@
 {% extends 'base/base.html' %} {% block 'card-content' %}
 <div class="custom-card vendor-details-card">
-    <div class="add-expenseid d-flex justify-content-end">
+    <div class="add-expenseid d-flex justify-content-between">
+        <div class="mb-4 d-flex justify-content-end">
+            <a href="{% url 'manageExpenseId' %}"><button class="btn btn-primary">MANAGE EXPENSE IDs</button></a>
+        </div>
         <button
             class="btn btn-success mb-3"
             data-toggle="modal"
