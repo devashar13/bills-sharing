@@ -1,0 +1,217 @@
+{% extends 'base/base.html' %} {% block 'card-content' %}
+<div class="custom-card vendors-list-card">
+    <h1 class="form-heading">Vendors List</h1>
+    <div style="overflow-y: scroll; overflow-x: none">
+        <div class="add-vendor d-flex justify-content-end">
+            <button
+                class="btn btn-success mb-3"
+                data-toggle="modal"
+                data-target="#addVendorModal"
+            >
+                ADD VENDOR
+            </button>
+        </div>
+        {% if vendors %}
+        <div>
+            <div class="custom-form-group">
+                <input
+                    type="text"
+                    id="filterByName"
+                    onkeyup="filterFunction()"
+                    required
+                />
+                <span>Filter by Name</span>
+            </div>
+        </div>
+        <table class="table table-striped" id="tbl">
+            <thead>
+                <tr>
+                    <th>Vendors List</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                {% for vendor in vendors %}
+                <tr id="{{vendor.id}}">
+                    <td class="vendor-name ">{{vendor.name}}</td>
+                    <td>
+                        <a href="{% url 'vendorDetails' vendorid=vendor.id %}"
+                            ><button class="btn btn-primary">
+                                VIEW DETAILS
+                            </button></a
+                        >
+                    </td>
+                    <td>
+                        <button class="view-bill btn btn-primary">VIEW BILLS</button>
+                    </td>
+                    <td>
+                        <button class="add-bill btn btn-success">
+                            ADD BILL
+                        </button>
+                    </td>
+                    <td>
+                        <button class="remove-bill btn btn-danger">
+                            REMOVE VENDOR
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="d-flex justify-content-center align-items-center">
+            <h1>NO VENDORS AVAILABLE</h1>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div
+    class="modal fade"
+    id="addVendorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="addVendorModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="custom-card login-form-card">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Add VENDOR
+                    </h5>
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <form class="custom-form" action="" method="POST">
+                        {% csrf_token %}
+                        <div class="custom-form-group">
+                            <input type="text" id="vname" required />
+                            <span>Vendor Name</span>
+                        </div>
+                        <div class="custom-form-group">
+                            <input type="email" id="vmail" required />
+                            <span>Email</span>
+                        </div>
+                        <div class="custom-form-group">
+                            <input type="text" id="gstin" required />
+                            <span>GSTIN</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                    >
+                        Close
+                    </button>
+                    <a href=""
+                        ><button class="btn btn-success" id="addVendorButton">
+                            &plus; ADD VENDOR
+                        </button></a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function filterFunction() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('filterByName');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('tblbody');
+        li = table.getElementsByTagName('tr');
+        // Loop through all list items, and hide those who don't match the search query
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName('td')[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = '';
+            } else {
+                li[i].style.display = 'none';
+            }
+        }
+    }
+
+    document.querySelectorAll('.add-bill').forEach((element) => {
+        element.addEventListener('click', (event) => {
+            vendorid = event.target.parentNode.parentNode.id;
+            location.assign(`/addBill/${vendorid}`);
+        });
+    });
+    document.querySelectorAll('.view-bill').forEach((element) => {
+        element.addEventListener('click', (event) => {
+            vendorid = event.target.parentNode.parentNode.id;
+            location.assign(`/viewBills/${vendorid}`);
+        });
+    });
+
+    function validateEmail(email) {
+        const re =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    $('#addVendorButton').click(function () {
+        var vname = $('#vname').val();
+        var vmail = $('#vmail').val();
+        var gstin = $('#gstin').val();
+        if (vname === '' || vmail === '' || gstin === ''  ) {
+            alert('Vendor Name and Vendor Email is Compulsory');
+        } else if(validateEmail(vmail) === false) {
+            alert('Email is invalid');
+        }else if(gstin.length !== 15){
+            alert('GSTIN should be 15 digits');
+        } else {
+            $.ajax({
+                headers: { 'X-CSRFToken': '{{csrf_token}}' },
+                type: 'POST',
+                url: '/addvendor/',
+                dataType: 'json',
+                data: {
+                    vname: vname,
+                    vmail: vmail,
+                    gstin: gstin,
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+            });
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+    $(".remove-bill").click(function(){
+        vendorid = event.target.parentNode.parentNode.id;
+        $.ajax({
+                headers: { 'X-CSRFToken': '{{csrf_token}}' },
+                type: 'POST',
+                url: '/removevendor/',
+                dataType: 'json',
+                data: {
+                    vid:vendorid
+                },
+                success: function (response) {
+                    console.log(response);
+                    location.reload()
+                },
+            });
+    })
+    
+</script>
+
+{% endblock %}

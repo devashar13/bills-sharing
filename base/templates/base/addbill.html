@@ -1,0 +1,253 @@
+{% extends 'base/base.html' %} {% block 'card-content' %}
+
+<div class="custom-card login-form-card" >
+    <h1 class="form-heading">Enter Invoice</h1>
+    <form class="custom-from" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="custom-form-group">
+            {% if msg %}
+            <div class="alert alert-danger" role="alert">
+                {{msg}}
+              </div>
+            {% endif %}
+            <p class="b-span">Vendor Name</p>
+			<select name="vendors-name" id="vendors-names">
+                {% if selectedvendor %}
+                    {% for vendor in vendorNames %}
+                    {% if 'supervisor' in userType %}
+                        {% if vendor.name == selectedvendor.name %}
+                            <option value="{{vendor.name}}" selected>{{vendor.name}}</option>
+                        {% else %}
+                            <option value="{{vendor.name}}">{{vendor.name}}</option>
+                        {% endif %}
+
+                    {% else %}
+                        {% if vendor.vendor__name == selectedvendor.name %}
+                            <option value="{{vendor.vendor__name}}" selected>{{vendor.vendor__name}}</option>
+                        {% else %}
+                            <option value="{{vendor.vendor__name}}">{{vendor.vendor__name}}</option>
+                        {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                {% if 'supervisor' in userType %}
+                {% for vendor in vendorNames %}
+                <option value="{{vendor.name}}">{{vendor.name}}</option>
+                {% endfor %}
+                {% else %}
+                    <option selected>Select Vendor Name</option>
+                    {% for vendor in vendorNames %}
+                        <option value="{{vendor.vendor__name}}">{{vendor.vendor__name}}</option>
+                    {% endfor %}
+                {% endif %}
+                {% endif %}
+            </select>
+		</div>
+        <div class="custom-form-group">
+			<input name="v-inv-no" id="v-inv-no" type="text" required/>
+			<span>V Inv No</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="v-inv-dt"  id="v-inv-dt" type="text" required/>
+			<span>V Inv Date</span>
+		</div>
+        <div class="custom-form-group">
+            <p class="b-span">Expense ID</p>
+			<select name="vendors-expense" id="vendors-expenses">
+                <option selected>Select Expense ID</option>
+                {% for vendor in vendors %}
+                <option name = {{vendor.expense_ids__eid}} value="{{vendor.expense_ids__eid}}">{{vendor.expense_ids__eid}}</option>
+                {% endfor %}
+            </select>
+		</div>
+        <div class="custom-form-group">
+            <input name="ex-from-date"  id="ex-from-date" type="text" required/>
+			<span>Ex From Date</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="ex-to-date" id="ex-to-date" type="text" required/>
+			<span>Ex To Date</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" name="qty" id="qty" type="number" required/>
+			<span>Quantity</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="rate" id="rate" type="number" required/>
+			<span>Rate</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="amount" id="amount" type="number" required/>
+			<span>Amount</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="sgst" id="sgst" type="number"/>
+			<span>SGST</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="cgst" id="cgst" type="number"/>
+			<span>CGST</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="igst" id="igst" type="number" />
+			<span>IGST</span>
+		</div>
+        <div class="custom-form-group">
+            <input class="cost" step="0.01" name="total" id="total" type="number" required/>
+			<span>Total Amount</span>
+		</div>
+        <div class="custom-form-group">
+            <textarea  name="narration" id="narration" type="text" required></textarea>
+			<span>Narration</span>
+		</div>
+        <div class="custom-form-group">
+            <input name="due" id="due" type="text" required/>
+			<span>Due Date</span>
+		</div>
+        <div class="custom-form-group">
+            <label for="myFileInput"></label>
+            <input name="myFileInput" id="myFileInput" type="file" accept="image/*;capture=camera" multiple  style="border-bottom: 0;">
+		</div>
+        <div class="custom-form-group">
+			<input type="submit" value="SUBMIT" />
+		</div>
+        </div>
+    </form>
+</div>
+<script>
+    
+    // $(document).ready(function() {
+          
+    //       $(function() {
+    //           $( "#ex-from-date" ).datepicker();
+    //       });
+    //   })
+    //   $(document).ready(function() {
+          
+        
+    //   })
+    //   function changeDate(){
+    //     var date = new Date($("#ex-from-date").val());
+    //     var day = date.getDate();
+    //     console.log(day)
+    //     var month = date.getMonth()
+    //     var year = date.getFullYear();  
+    //     var today = year+'-'+month+'-'+day;
+    //     console.log(today)
+    //     $( "#ex-to-date" ).datepicker({
+    //     dateFormat: 'yy-mm-dd',
+    //     minDate : today,
+    //     });
+    //   }
+        
+    $(function () {
+    $("#ex-from-date").datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        numberOfMonths: 1,
+        onClose: function (selectedDate) {
+            $("#ex-to-date").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#v-inv-dt").datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        numberOfMonths: 1,
+    });
+    $("#ex-to-date").datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        numberOfMonths: 1,
+        onClose: function (selectedDate) {
+            $("#ex-from-date").datepicker("option", "maxDate", selectedDate);
+        }
+    });
+    $("#due").datepicker({
+        dateFormat: 'dd-mm-yy',
+        
+        changeMonth: true,
+        numberOfMonths: 1,
+        minDate: '0'
+    });
+});
+$("#rate").keyup(function(){
+    console.log($("#qty").val())
+   total = $("#qty").val()* $("#rate").val();
+   $("#amount").val(total).trigger("change");
+});
+$("#qty").keyup(function(){
+    console.log($("#qty").val())
+   total = $("#qty").val()* $("#rate").val();
+   $("#amount").val(total).trigger('change');
+});
+
+$("#total").focus(function(){
+   total = Number($("#amount").val()) + Number($("#sgst").val())+Number($("#cgst").val())+Number($("#igst").val());
+   $("#total").val(total.toFixed(2));
+});
+$("#total").focusout(function(){
+    if($("#total").val() === '0') {
+        $("#total").val('')
+    }
+});
+$("#rate").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#amount").change(function(){
+    console.log("hi")
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#total").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#sgst").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#cgst").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+$("#igst").focusout(function(){
+    var inInt = Number($(this).val())
+    $(this).val(inInt.toFixed(2))
+});
+</script>
+<script>
+    $(document).ready(() => {
+        $("#vendors-names").change(function() {
+            var selectedvendor = $("#vendors-names").children("option:selected").val();
+            if(selectedvendor === 'Select Vendor Name') {
+                alert("Select a Vendor Name")
+                document.getElementById("vendors-expenses").innerHTML='<option selected>Select Expense ID</option>'
+            } else {
+                $.ajax({
+                    'headers': { "X-CSRFToken": '{{csrf_token}}' },
+                    'type': 'POST',
+                    'url': '/getexpenseidsforvendor/',
+                    'data': {
+                        'vendor':selectedvendor
+                    },
+                    success: function(response, textStatus, jqXHR) {
+                        html='<option selected>Select Expense ID</option>'
+                        Object.keys(response).forEach((data) => {
+                            d = `<option name="${response[data]}" value="${response[data]}">${response[data]}</option>`
+                            html+=d
+                        })
+                        document.getElementById("vendors-expenses").innerHTML=html
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                }   
+                )
+            }
+        })
+    })
+</script>
+{% endblock %}

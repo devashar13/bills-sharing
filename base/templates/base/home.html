@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %} {% load static %} {% block 'card-content' %}
+<div class="custom-card v-card vendor-details-card d-flex justify-content-center align-items-center" style="min-height: 400px">
+    <div>
+
+		{% if 'supervisor' in userType %}
+		<div class="row d-flex justify-content-center align-items-center">
+            <a href="{% url 'getVendors' %}" class="home-box button">VENDOR<br />MANAGEMENT</a>
+            <a href="{% url 'selectEmployee' %}" class="home-box button">EMPLOYEE<br />MANAGEMENT</a>
+            <a href="{% url 'manageExpenseId' %}" class="home-box button">EXPENSE ID<br />MANAGEMENT</a>
+        </div>
+		{% endif %}
+		<div class="row d-flex justify-content-center align-items-center">
+            <a href="{% url 'viewBills' %}" class="home-box button">VIEW<br />BILLS</a>
+            <a href="{% url 'addBill' %}" class="home-box button">ADD<br />BILL</a>
+        </div>  
+    </div>
+</div>
+{% endblock %}

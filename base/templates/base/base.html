@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+            integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"
+        ></script>
+        <link
+            href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css"
+            rel="stylesheet"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+            integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+            crossorigin="anonymous"
+        ></script>
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+        <title>Share Bills</title>
+        <style>
+          .cost{
+      text-align: right; 
+  }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+          <div class="form-inline">
+            <a class="navbar-brand" href="#">Bills</a>
+            <button id="np" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div
+              class="collapse navbar-collapse"
+              id="navbarSupportedContent"
+          >
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="{%url 'home'%}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{%url 'viewBills'%}">View All Bills</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{%url 'addBill'%}">Add Bill</a>
+                  </li>
+
+                {% if 'supervisor' in userType %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{%url 'getVendors'%}">Vendors Management</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{%url 'manageExpenseId'%}">Expense ID Management</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{%url 'selectEmployee'%}">Employee Management</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+          <div class="form-inline">
+            <a href="{%url 'logout'%}"><button class="btn btn-outline-danger">LOGOUT</button></a>
+          </div>
+            
+          </nav>
+        {{data}}
+        <div class="main-container">
+
+            {% block 'card-content' %} {% endblock %}
+        </div>
+    </body>
+</html>

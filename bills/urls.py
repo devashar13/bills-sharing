@@ -15,7 +15,38 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from base.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("login/",loginView,name = "login"),
+    path("logout/",logoutView,name = "logout"),
+    path("home/",homeView,name="home"),
+    path("vendors/",getVendors,name = "getVendors"),
+    path("addvendor/",addVendor,name = "addVendor"),
+    path("removevendor/",removeVendor,name = "removeVendor"),
+    path("manageexp/",manageExpenseId,name = "manageExpenseId"),
+    path("removeexpid/",removeExpId,name = "removeExpId"),
+    
+    
+    path("vendordetail/<int:vendorid>/",vendorDetails,name="vendorDetails"),
+    path("getexpenseidsforvendor/",getExpenseIdsForVendor,name="getExpenseIdsForVendor"),
+    path("addexpenseidtovendor/",addExpenseID,name="addExpenseID"),
+    path("createexpenseid/",createExpenseID,name="createExpenseID"),
+    path("addBill/",addBill,name = "addBill"),
+    path("addBill/<int:vendorid>",addBillVendor,name = "addBillVendor"),
+    path("savebill/",saveBill,name = "saveBill"),
+    path("viewBills/",viewBills,name = "viewBills"),
+    path("selectEmployee/",selectEmployee,name = "selectEmployee"),
+    path("selectEmployee/<int:empid>",employeeVendor,name = "employeeVendor"),
+    path("viewBills/<int:vendorid>",vendorBills,name = "vendorBills"),
+    path("sendImages/",sendImages,name = "sendImages"),
+    path("saveEmployeeVendors/",saveEmployeeVendors,name = "saveEmployeeVendors"),
+    path("deleteEmployeeVendors/",deleteEmployeeVendors,name = "deleteEmployeeVendors"),
+    
+    
+    
+    
 ]
+urlpatterns+=static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

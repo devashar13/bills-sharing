@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Quicksand', sans-serif;
+}
+body {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: #86c0e2 !important;
+    min-height: 100vh;
+    width: 100vw;
+}
+
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color: #726b6b !important;
+}
+
+.main-container {
+    /* position: relative; */
+    /* background: linear-gradient(180deg, #fff 0% 50%, #4bace4 50% 100%); */
+    /* background-color: #4bace4; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+
+}
+
+.custom-card {
+    /* position: absolute; */
+    /* max-height: 90vh; */
+    /* overflow-x: scroll; */
+    /* top: 50%; */
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    padding: 40px 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    background: #fff;
+    margin: 50px 0;
+    /* max-height: 85vh; */
+    /* overflow-y: scroll; */
+    /* overflow-x: hidden; */
+}
+.form-heading {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    color: #726b6b;
+}
+.custom-form {
+    position: relative;
+}
+.custom-form-group {
+    position: relative;
+    margin: 40px 0;
+    width: 100%;
+}
+.custom-form-group input,
+.custom-form-group textarea {
+    position: relative;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 6px 0;
+    border-bottom: 1px solid #726b6b;
+    font-size: 20px;
+    color: #726b6b;
+    background: transparent;
+}
+.custom-form-group span {
+    color: #726b6b;
+    background: transparent;
+    display: inline-block;
+    padding: 3px 10px;
+    position: absolute;
+    top: 8px;
+    left: 0;
+    font-size: 15px;
+    text-transform: uppercase;
+    transition: 0.5s;
+    /* z-index: -1; */
+}
+.custom-form-group input:focus + span,
+.custom-form-group textarea:focus + span,
+.custom-form-group input[type='text']:valid + span,
+.custom-form-group input[type='password']:valid + span,
+.custom-form-group textarea:valid + span {
+    color: #fff;
+    background: #025175;
+    top: -20px;
+}
+
+.b-span {
+    padding: 3px 10px;
+    font-size: 15px;
+    text-transform: uppercase;
+    color: #fff;
+    background: #025175;
+    width: fit-content;
+}
+
+.custom-form-group input:focus + .b-span,
+.custom-form-group textarea:focus + .b-span,
+.custom-form-group input[type='text']:valid + .b-span,
+.custom-form-group input[type='password']:valid + span,
+.custom-form-group textarea:valid + .b-span {
+    color: #fff;
+    background: #025175;
+}
+
+.custom-form-group:last-child {
+    text-align: right;
+    margin: 20px 0;
+}
+.custom-form-group input[type='submit'] {
+    width: auto;
+    border: none;
+    color: #fff;
+    background: #025175;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+  .cost{
+    text-align: right; 
+  }
+
+input[type='file']::-webkit-file-upload-button {
+    border: 2px solid #6c5ce7;
+    padding: 0.2em 0.4em;
+    border-radius: 0.2em;
+    background-color: #a29bfe;
+    transition: 1s;
+}
+
+input[type='file']::file-selector-button {
+    border: 2px solid #6c5ce7;
+    padding: 0.2em 0.4em;
+    border-radius: 0.2em;
+    background-color: #a29bfe;
+    transition: 1s;
+}
+
+#tbl {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.login-form-card, 
+.bill-form-card{
+    width: 100%;
+    max-width: 500px;
+}
+
+.vendors-list-card,
+.vendor-details-card {
+    width: 100%;
+    max-width: 900px;
+}
+
+.view-bills-card {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.vendor-name {
+    min-width: 200px;
+}
+
+#id-added {
+    background-color: lightgreen;
+    font-weight: bold;
+    padding: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: max-content;
+    border: 2px solid green;
+    border-radius: 5px;
+}
+
+a.button {
+    appearance: button;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    cursor: pointer;
+}
+
+a.button, a.button:hover, a.button:focus, a.button:active {
+    color: white !important;
+    text-decoration: none;
+}
+
+.home-box {
+    padding: 10px;
+    /* border: 2px solid black; */
+    border: none;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 150px;
+    margin: 30px;
+    text-align: center;
+    color: white;
+    background-color: #6c5ce7;
+
+}
+
+
+@media only screen and (max-width: 800px) {
+    .v-card {
+      flex-direction: column !important;
+      
+    }
+  }
+
+  @media only screen and (max-width: 520px) {
+    .home-box {
+        width: 110px;
+        font-size: 13px;
+    }
+  }

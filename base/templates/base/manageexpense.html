@@ -1,0 +1,73 @@
+{% extends 'base/base.html' %} {% block 'card-content' %}
+<div class="custom-card vendors-list-card">
+    <h1 class="form-heading">EXPENSE IDs</h1>
+    <div style="overflow-y: scroll; overflow-x: none">
+        <div class="add-vendor d-flex justify-content-end">
+            <div class="mb-4 d-flex justify-content-end">
+                <a href="{% url 'createExpenseID' %}"><button class="btn btn-success">&plus; CREATE EXPENSE ID</button></a>
+            </div>
+
+        </div>
+        {% if allExpenseIds %}
+        <div>
+            <div class="custom-form-group">
+                <input
+                    type="text"
+                    id="filterByName"
+                    onkeyup="filterFunction()"
+                    required
+                />
+                <span>Filter by Name</span>
+            </div>
+        </div>
+        <table class="table table-striped" id="tbl">
+            <thead>
+                <tr>
+                    <th>EXPENSE IDs</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                {% for expense in allExpenseIds %}
+                <tr id="{{expense.eid}}">
+                    <td class="vendor-name text-left">
+                        {{expense.eid}} - <strong>{{expense.epattern}}</strong>
+                    </td>
+                    <td>
+                    <div class="d-flex w-100 justify-content-end">
+                        <button class="remove-bill btn btn-danger">
+                            REMOVE EXPENSE ID
+                        </button>
+                    </div>
+                    </td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="d-flex justify-content-center align-items-center">
+            <h1>NO EXPENSE IDs</h1>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script>
+    $(".remove-bill").on("click",function(){
+        eid = event.target.parentNode.parentNode.id;
+        $.ajax({
+                headers: { 'X-CSRFToken': '{{csrf_token}}' },
+                type: 'POST',
+                url: '/removeexpid/',
+                dataType: 'json',
+                data: {
+                    eid:eid
+                },
+                success: function (response) {
+                    console.log(response);
+                    location.reload()
+                },
+            });
+    })
+</script>
+{% endblock %}
