@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'bills.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bills',
+        'NAME': 'new',
         'USER': 'root',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '',
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': 'db',
+        'PORT': 3306,
     }
 }
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
