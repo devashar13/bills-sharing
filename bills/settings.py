@@ -80,10 +80,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bills',
-        'USER': 'root',
+        'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 DATE_INPUT_FORMATS = ['%d-%m-%Y']

@@ -88,6 +88,7 @@ a, a:hover, a:focus, a:active {
 .custom-form-group input:focus + span,
 .custom-form-group textarea:focus + span,
 .custom-form-group input[type='text']:valid + span,
+.custom-form-group input[type='password']:valid + span,
 .custom-form-group textarea:valid + span {
     color: #fff;
     background: #025175;
@@ -106,6 +107,7 @@ a, a:hover, a:focus, a:active {
 .custom-form-group input:focus + .b-span,
 .custom-form-group textarea:focus + .b-span,
 .custom-form-group input[type='text']:valid + .b-span,
+.custom-form-group input[type='password']:valid + span,
 .custom-form-group textarea:valid + .b-span {
     color: #fff;
     background: #025175;
@@ -184,10 +186,44 @@ input[type='file']::file-selector-button {
     border-radius: 5px;
 }
 
+a.button {
+    appearance: button;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    cursor: pointer;
+}
+
+a.button, a.button:hover, a.button:focus, a.button:active {
+    color: white !important;
+    text-decoration: none;
+}
+
+.home-box {
+    padding: 10px;
+    /* border: 2px solid black; */
+    border: none;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 150px;
+    margin: 30px;
+    text-align: center;
+    color: white;
+    background-color: #6c5ce7;
+
+}
+
 
 @media only screen and (max-width: 800px) {
     .v-card {
       flex-direction: column !important;
       
+    }
+  }
+
+  @media only screen and (max-width: 520px) {
+    .home-box {
+        width: 110px;
+        font-size: 13px;
     }
   }

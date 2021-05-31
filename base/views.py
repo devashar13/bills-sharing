@@ -24,10 +24,11 @@ def loginView(request):
             if user is not None:
                 login(request,user)
                 userTypeList = list(user.type)
-                if "supervisor" in userTypeList:
-                    return redirect('home')
-                else:
-                    return redirect('addBill')
+                # if "supervisor" in userTypeList:
+                #     return redirect('home')
+                # else:
+                #     return redirect('addBill')
+                return redirect('home')
                 
             else:
                 return render(request,'base/login.html',{"data":"wrong"})
@@ -39,10 +40,12 @@ def loginView(request):
 @login_required(login_url='/login/')
 def homeView(request):
     userTypeList = list(request.user.type)
-    if 'supervisor' in userTypeList:
-        return render(request,"base/home.html",{'userType':userTypeList})
-    else:
-        return redirect("addBill")
+    # if 'supervisor' in userTypeList:
+    #     return render(request,"base/home.html",{'userType':userTypeList})
+    # else:
+    #     return redirect("addBill")
+    return render(request,"base/home.html",{'userType':userTypeList})
+
     
 @login_required(login_url='/login/')
 def getVendors(request):
