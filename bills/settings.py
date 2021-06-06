@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'bills.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bills',
+        'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': '127.0.0.1',
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
