@@ -1,13 +1,14 @@
-version: '3.3'
+
+version: '3.8'
 services:
     db:
-      image: mysql:5.7
-      ports:
+        image: mysql:5.7
+        ports:
         - '1234:3306'
-      environment:
-        MYSQL_DATABASE: 'new'
-        MYSQL_ROOT_PASSWORD: 'password'
-        MYSQL_PASSWORD: 'password'
+
+        environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=billssharing
     app:
         build: . 
         volumes:
@@ -16,7 +17,7 @@ services:
             - 8000:8000
         image: app:django
         container_name: dj_con
-        command: python manage.py runserver 0.0.0.0:8000
+        command: sh -c "python manage.py makemigrations;python manage.py migrate; python manage.py loaddata init.json;python manage.py runserver 0.0.0.0:8000"
         depends_on:
             - db
     
